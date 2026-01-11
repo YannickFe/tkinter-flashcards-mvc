@@ -1,5 +1,6 @@
+from tkinter import messagebox
+
 from models.main import Model
-from models.auth import User
 from views.main import View
 
 
@@ -20,9 +21,12 @@ class SignInController:
 
     def signin(self) -> None:
         username = self.frame.username_input.get()
-        pasword = self.frame.password_input.get()
-        data = {"username": username, "password": pasword}
-        print(data)
-        self.frame.password_input.delete(0, last=len(pasword))
-        user: User = {"username": data["username"]}
-        self.model.auth.login(user)
+        password = self.frame.password_input.get()
+        try:
+            self.model.auth.authenticate(username=username, password=password)
+        except ValueError as exc:
+            messagebox.showerror("Sign In Failed", str(exc))
+            return
+
+        self.frame.password_input.delete(0, last=len(password))
+        messagebox.showinfo("Success", f"Signed in as {username}.")

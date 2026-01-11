@@ -17,3 +17,5 @@ source .venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+
+User accounts are stored locally in `app.db` (SQLite, managed via SQLAlchemy) and created the first time you sign up. Passwords are stored as salted hashes.

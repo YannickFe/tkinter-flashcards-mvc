@@ -1,5 +1,6 @@
+from tkinter import messagebox
+
 from models.main import Model
-from models.auth import User
 from views.main import View
 
 
@@ -25,10 +26,22 @@ class SignUpController:
             "password": self.frame.password_input.get(),
             "has_agreed": self.frame.has_agreed.get(),
         }
-        print(data)
-        user: User = {"username": data["username"]}
-        self.model.auth.login(user)
+        if not data["has_agreed"]:
+            messagebox.showerror("Sign Up Failed", "You must accept the Terms & Conditions.")
+            return
+
+        try:
+            self.model.auth.register_user(
+                username=data["username"],
+                full_name=data["fullname"],
+                password=data["password"],
+            )
+        except ValueError as exc:
+            messagebox.showerror("Sign Up Failed", str(exc))
+            return
+
         self.clear_form()
+        messagebox.showinfo("Success", "Account created and signed in.")
         
     
     def clear_form(self) -> None:
