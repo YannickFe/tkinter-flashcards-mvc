@@ -5,7 +5,7 @@ Tkinter is a common library for making Graphical User Interface (GUI) in Python.
 To run the project,
 
 1. Clone the project
-2. Create a virtual enviroment and activate it.
+2. Create a virtual environment and activate it.
 
 ```bash
 python3 -m venv .venv
@@ -21,7 +21,7 @@ pip install -r requirements.txt
 User accounts are stored locally in `app.db` (SQLite, managed via SQLAlchemy) and created the first time you sign up. Passwords are stored as salted hashes.
 
 ## Features
-- MVC structure with frames for sign up, sign in, home, deck list, deck detail, and study.
+- MVC structure with frames for signup, sign-in, home, deck list, deck detail, and study.
 - Decks and cards are persisted per user. Cards store a score; studying presents lower-score cards more often. Marking “Memorized” increases the score, “Not Memorized” decreases it (floored at zero).
 - A sample deck seeds on first login to demonstrate flows.
 

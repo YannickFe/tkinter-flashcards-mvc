@@ -7,7 +7,7 @@ class ObservableModel:
     """Models that can have event listeners.
 
     Observable models can register callback functions for specific events.
-    When any data changes, relavent events can be triggered.
+    When any data changes, relevant events can be triggered.
     This allows all the controllers that depends on the current state of those data to
     react to the changes.
     """

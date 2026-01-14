@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 DATABASE_URL = "sqlite:///app.db"
 
-# SQLite needs check_same_thread disabled because Tkinter callbacks run on the main thread
+# SQLite needs check_same_thread disabled because Tkinter callbacks run on the main thread,
 # but sessions may be created in different controller contexts.
 # Using check_same_thread allows multiple threads to use this connection.
 engine = create_engine(
