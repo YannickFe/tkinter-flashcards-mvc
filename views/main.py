@@ -1,4 +1,3 @@
-from keyof import KeyOf
 from tkinter import Frame
 from typing import TypedDict
 
