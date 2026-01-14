@@ -36,9 +36,12 @@ class View:
         self._add_frame(DeckDetailView, "deck_detail")
         self._add_frame(StudyView, "study")
 
-    def _add_frame(self, frame_class: type[Frame], name: KeyOf[Frames]) -> None:
-        # with type[] we do not expect an object but a class
-        # using KeyOf from the keyof package we can ensure the name is in the Frames dict
+    def _add_frame(self, frame_class: type, name: str) -> None:
+        if not issubclass(frame_class, Frame):
+            raise ValueError(f"Frame '{name}' is not a subclass of tkinter.Frame.")
+        if name in self.frames:
+            raise ValueError(f"Frame '{name}' already exists.")
+        # Params are valid, create the frame and add it to the dict
         self.frames[name] = frame_class(self.root)
         self.frames[name].grid(row=0, column=0, sticky="nsew")
 
