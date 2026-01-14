@@ -7,7 +7,7 @@ from typing import List, Optional
 from sqlalchemy import Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Session, relationship
 
-from .storage import Base, SessionLocal
+from models.storage import Base, SessionLocal
 
 
 class DeckRecord(Base):

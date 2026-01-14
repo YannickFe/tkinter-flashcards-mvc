@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 
-from .storage import Base
+from models.storage import Base
 
 
 class UserRecord(Base):

@@ -2,12 +2,12 @@ from models.main import Model
 from models.auth import Auth
 from views.main import View
 
-from .home import HomeController
-from .signin import SignInController
-from .signup import SignUpController
-from .deck_list import DeckListController
-from .deck_detail import DeckDetailController
-from .study import StudyController
+from controllers.home import HomeController
+from controllers.signin import SignInController
+from controllers.signup import SignUpController
+from controllers.deck_list import DeckListController
+from controllers.deck_detail import DeckDetailController
+from controllers.study import StudyController
 
 
 class Controller:

@@ -5,9 +5,9 @@ from typing import Optional, TypedDict, Union
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from .observable import ObservableModel
-from .storage import SessionLocal, init_db
-from .user import UserRecord
+from models.observable import ObservableModel
+from models.storage import SessionLocal, init_db
+from models.user import UserRecord
 
 
 class User(TypedDict):

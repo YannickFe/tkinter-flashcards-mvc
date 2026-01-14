@@ -1,5 +1,5 @@
-from .auth import Auth
-from .deck import DeckService
+from models.auth import Auth
+from models.deck import DeckService
 
 
 class Model:

@@ -2,13 +2,13 @@ from keyof import KeyOf
 from tkinter import Frame
 from typing import TypedDict
 
-from .deck_list import DeckListView
-from .deck_detail import DeckDetailView
-from .root import Root
-from .home import HomeView
-from .signin import SignInView
-from .signup import SignUpView
-from .study import StudyView
+from views.deck_list import DeckListView
+from views.deck_detail import DeckDetailView
+from views.root import Root
+from views.home import HomeView
+from views.signin import SignInView
+from views.signup import SignUpView
+from views.study import StudyView
 
 
 class Frames(TypedDict):
