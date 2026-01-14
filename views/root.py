@@ -2,6 +2,13 @@ from tkinter import Tk
 
 
 class Root(Tk):
+    """
+    Root class for initializing the main application window.
+
+    This class extends the Tk class to provide an entry point for our GUI application.
+     It initializes the main application window with specific dimensions,
+     a title, and layout configuration.
+    """
     def __init__(self):
         super().__init__()
 
@@ -13,5 +20,6 @@ class Root(Tk):
         self.geometry(f"{start_width}x{start_height}")
         self.minsize(width=min_width, height=min_height)
         self.title("TKinter MVC Multi-frame GUI")
+        # Give row/col 0 stretch weight so stacked frames fill and grow with the window.
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)

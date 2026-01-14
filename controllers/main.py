@@ -5,6 +5,9 @@ from views.main import View
 from .home import HomeController
 from .signin import SignInController
 from .signup import SignUpController
+from .deck_list import DeckListController
+from .deck_detail import DeckDetailController
+from .study import StudyController
 
 
 class Controller:
@@ -13,12 +16,23 @@ class Controller:
         self.model = model
         self.signin_controller = SignInController(model, view)
         self.signup_controller = SignUpController(model, view)
-        self.home_controller = HomeController(model, view)
+        self.deck_list_controller = DeckListController(model, view)
+        self.deck_detail_controller = DeckDetailController(model, view)
+        self.study_controller = StudyController(model, view)
+        self.home_controller = HomeController(
+            model, view, deck_list_controller=self.deck_list_controller
+        )
+
+        self.deck_list_controller.set_detail_controller(self.deck_detail_controller)
+        self.deck_detail_controller.set_study_controller(self.study_controller)
 
         self.model.auth.add_event_listener("auth_changed", self.auth_state_listener)
 
     def auth_state_listener(self, data: Auth) -> None:
         if data.is_logged_in:
+            if data.current_user:
+                self.model.decks.seed_sample(data.current_user["id"])
+            self.deck_list_controller.refresh()
             self.home_controller.update_view()
             self.view.switch("home")
         else:

@@ -5,12 +5,13 @@ from typing import Optional, TypedDict, Union
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from .base import ObservableModel
+from .observable import ObservableModel
 from .storage import SessionLocal, init_db
 from .user import UserRecord
 
 
 class User(TypedDict):
+    id: int
     username: str
     full_name: str
 
@@ -49,8 +50,8 @@ class Auth(ObservableModel):
                 raise ValueError("Username already exists.") from exc
             session.refresh(user)
 
-        self.login({"username": user.username, "full_name": user.full_name})
-        return {"username": user.username, "full_name": user.full_name}
+        self.login({"id": user.id, "username": user.username, "full_name": user.full_name})
+        return {"id": user.id, "username": user.username, "full_name": user.full_name}
 
     def authenticate(self, username: str, password: str) -> User:
         if not username or not password:
@@ -68,8 +69,8 @@ class Auth(ObservableModel):
         if password_hash != user.password_hash:
             raise ValueError("Invalid username or password.")
 
-        self.login({"username": user.username, "full_name": user.full_name})
-        return {"username": user.username, "full_name": user.full_name}
+        self.login({"id": user.id, "username": user.username, "full_name": user.full_name})
+        return {"id": user.id, "username": user.username, "full_name": user.full_name}
 
     def login(self, user: User) -> None:
         self.is_logged_in = True

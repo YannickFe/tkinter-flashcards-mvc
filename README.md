@@ -19,3 +19,20 @@ pip install -r requirements.txt
 ```
 
 User accounts are stored locally in `app.db` (SQLite, managed via SQLAlchemy) and created the first time you sign up. Passwords are stored as salted hashes.
+
+## Features
+- MVC structure with frames for sign up, sign in, home, deck list, deck detail, and study.
+- Decks and cards are persisted per user. Cards store a score; studying presents lower-score cards more often. Marking “Memorized” increases the score, “Not Memorized” decreases it (floored at zero).
+- A sample deck seeds on first login to demonstrate flows.
+
+## Usage
+```bash
+python main.py
+```
+Sign up or sign in, create decks, add cards, open a deck to manage cards, and start a study session to rate each card.
+
+## Tests
+Unit tests cover deck scoring and selection logic:
+```bash
+python -m unittest
+```
