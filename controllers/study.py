@@ -1,4 +1,7 @@
+from typing import Optional
+
 from models.main import Model
+from models.deck import CardData
 from views.main import View
 
 
@@ -9,7 +12,7 @@ class StudyController:
         self.frame = self.view.frames["study"]
         self.current_deck_id: int | None = None
         self.current_deck_name: str = ""
-        self.current_card = None
+        self.current_card: Optional[CardData] = None
         self._bind()
 
     def _require_user(self) -> int:

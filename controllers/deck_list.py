@@ -1,6 +1,9 @@
+from typing import List, Optional
 from tkinter import messagebox
 
+from controllers.deck_detail import DeckDetailController
 from models.main import Model
+from models.deck import DeckData
 from views.main import View
 
 
@@ -9,11 +12,11 @@ class DeckListController:
         self.model = model
         self.view = view
         self.frame = self.view.frames["deck_list"]
-        self.detail_controller = None
-        self._decks = []
+        self.detail_controller: DeckDetailController | None = None
+        self._decks: List[DeckData] = []
         self._bind()
 
-    def set_detail_controller(self, controller) -> None:
+    def set_detail_controller(self, controller: DeckDetailController) -> None:
         self.detail_controller = controller
 
     def _bind(self) -> None:
@@ -54,7 +57,7 @@ class DeckListController:
         except ValueError as exc:
             self.frame.set_message(str(exc))
 
-    def _selected_deck(self):
+    def _selected_deck(self) -> Optional[DeckData]:
         selection = self.frame.deck_list.curselection()
         if not selection:
             return None

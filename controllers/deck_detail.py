@@ -1,6 +1,9 @@
+from typing import List, Optional
 from tkinter import END, messagebox
 
+from controllers.study import StudyController
 from models.main import Model
+from models.deck import CardData
 from views.main import View
 
 
@@ -9,12 +12,12 @@ class DeckDetailController:
         self.model = model
         self.view = view
         self.frame = self.view.frames["deck_detail"]
-        self.study_controller = None
+        self.study_controller: StudyController | None = None
         self.current_deck_id: int | None = None
-        self.current_cards = []
+        self.current_cards: List[CardData] = []
         self._bind()
 
-    def set_study_controller(self, controller) -> None:
+    def set_study_controller(self, controller: StudyController) -> None:
         self.study_controller = controller
 
     def _bind(self) -> None:
@@ -59,7 +62,7 @@ class DeckDetailController:
         except ValueError as exc:
             self.frame.set_message(str(exc))
 
-    def _selected_card(self):
+    def _selected_card(self) -> Optional[CardData]:
         selection = self.frame.cards_list.curselection()
         if not selection:
             return None
