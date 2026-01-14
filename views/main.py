@@ -1,3 +1,5 @@
+from keyof import KeyOf
+from tkinter import Frame
 from typing import TypedDict
 
 from .deck_list import DeckListView
@@ -34,14 +36,19 @@ class View:
         self._add_frame(DeckDetailView, "deck_detail")
         self._add_frame(StudyView, "study")
 
-    def _add_frame(self, Frame, name: str) -> None:
-        self.frames[name] = Frame(self.root)
+    def _add_frame(self, frame_class: type[Frame], name: KeyOf[Frames]) -> None:
+        # with type[] we do not expect an object but a class
+        # using KeyOf from the keyof package we can ensure the name is in the Frames dict
+        self.frames[name] = frame_class(self.root)
         self.frames[name].grid(row=0, column=0, sticky="nsew")
 
     def switch(self, name: str) -> None:
-        frame = self.frames[name]
-        # Raise the frame to the top to make it visible
-        frame.tkraise()
+        if name in self.frames:
+            frame = self.frames[name]
+            # Raise the frame to the top to make it visible
+            frame.tkraise()
+        else:
+            raise ValueError(f"Frame '{name}' does not exist.")
 
     def start_mainloop(self) -> None:
         # Start the main Tk loop
