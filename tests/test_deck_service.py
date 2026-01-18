@@ -1,36 +1,16 @@
 import unittest
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from unittest import TestCase
-
 from models.deck import DeckService
-from models.storage import Base
-from models.user import UserRecord
+from tests.base import DBTestCase
 
 
-class DeckServiceTests(TestCase):
+class DeckServiceTests(DBTestCase):
+    """Exercise deck scoring/selection logic against an in-memory DB."""
     def setUp(self) -> None:
-        # Set up in-memory database and session factory
-        engine = create_engine("sqlite:///:memory:", future=True)
-        session_maker = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
-
-        # Base.metadata collects all mapped tables; create_all builds them in SQLite if missing.
-        Base.metadata.create_all(bind=engine)
-
-        self.session_factory = session_maker
+        super().setUp()
         self.service = DeckService(session_factory=self.session_factory)
 
-        with self.session_factory() as session_maker:
-            user = UserRecord(
-                username="test",
-                full_name="Test User",
-                password_hash="hash",
-                password_salt="salt",
-            )
-            session_maker.add(user)
-            session_maker.commit()
-            self.user_id = user.id
+        self.user_id = self.create_user(username="test", full_name="Test User")
 
     def test_score_updates_and_floors(self) -> None:
         deck = self.service.create_deck(self.user_id, "Study")

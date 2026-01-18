@@ -42,6 +42,10 @@ class DeckData:
     name: str
     description: str
 
+    def __repr__(self) -> str:
+        desc = (self.description[:20] + "...") if len(self.description) > 20 else self.description
+        return f"DeckData(id={self.id}, name={self.name!r}, desc={desc!r})"
+
 
 @dataclass
 class CardData:
@@ -49,6 +53,10 @@ class CardData:
     question: str
     answer: str
     score: int
+
+    def __repr__(self) -> str:
+        question_preview = (self.question[:20] + "...") if len(self.question) > 20 else self.question
+        return f"CardData(id={self.id}, q={question_preview!r}, score={self.score})"
 
 
 class DeckService:
@@ -61,6 +69,9 @@ class DeckService:
         # Small helper to open a new SQLAlchemy session.
         return self._session_factory()
 
+    def _log(self, message: str) -> None:
+        print(f"[DeckService] {message}")
+
     def create_deck(self, user_id: int, name: str, description: str = "") -> DeckData:
         if not name:
             raise ValueError("Deck name is required.")
@@ -69,7 +80,9 @@ class DeckService:
             session.add(deck)
             session.commit()
             session.refresh(deck)
-            return DeckData(id=deck.id, name=deck.name, description=deck.description or "")
+            data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")
+            self._log(f"Created deck {data}")
+            return data
 
     def list_decks(self, user_id: int) -> List[DeckData]:
         with self._session() as session:
@@ -79,7 +92,9 @@ class DeckService:
                 .order_by(DeckRecord.name.asc())
                 .all()
             )
-            return [DeckData(id=d.id, name=d.name, description=d.description or "") for d in decks]
+            result = [DeckData(id=d.id, name=d.name, description=d.description or "") for d in decks]
+            self._log(f"Fetched {len(result)} decks for user {user_id}")
+            return result
 
     def delete_deck(self, user_id: int, deck_id: int) -> None:
         with self._session() as session:
@@ -92,6 +107,7 @@ class DeckService:
                 raise ValueError("Deck not found.")
             session.delete(deck)
             session.commit()
+            self._log(f"Deleted deck id={deck_id} for user {user_id}")
 
     def get_deck(self, user_id: int, deck_id: int) -> DeckData:
         with self._session() as session:
@@ -102,7 +118,9 @@ class DeckService:
             )
             if not deck:
                 raise ValueError("Deck not found.")
-            return DeckData(id=deck.id, name=deck.name, description=deck.description or "")
+            data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")
+            self._log(f"Loaded deck {data}")
+            return data
 
     def add_card(self, user_id: int, deck_id: int, question: str, answer: str) -> CardData:
         if not question or not answer:
@@ -121,7 +139,9 @@ class DeckService:
             session.add(card)
             session.commit()
             session.refresh(card)
-            return CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
+            data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
+            self._log(f"Added card {data} to deck {deck_id}")
+            return data
 
     def update_card(
         self, user_id: int, card_id: int, question: Optional[str] = None, answer: Optional[str] = None
@@ -140,7 +160,9 @@ class DeckService:
                 card.answer = answer
             session.commit()
             session.refresh(card)
-            return CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
+            data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
+            self._log(f"Updated card {data}")
+            return data
 
     def delete_card(self, user_id: int, card_id: int) -> None:
         with self._session() as session:
@@ -153,6 +175,7 @@ class DeckService:
                 raise ValueError("Card not found.")
             session.delete(card)
             session.commit()
+            self._log(f"Deleted card id={card_id} for user {user_id}")
 
     def list_cards(self, user_id: int, deck_id: int) -> List[CardData]:
         with self._session() as session:
@@ -162,9 +185,11 @@ class DeckService:
                 .order_by(CardRecord.id.asc())
                 .all()
             )
-            return [
+            result = [
                 CardData(id=c.id, question=c.question, answer=c.answer, score=c.score) for c in cards
             ]
+            self._log(f"Fetched {len(result)} cards for deck {deck_id} (user {user_id})")
+            return result
 
     def update_score(self, user_id: int, card_id: int, delta: int) -> CardData:
         with self._session() as session:
@@ -178,7 +203,9 @@ class DeckService:
             card.score = max(0, card.score + delta)
             session.commit()
             session.refresh(card)
-            return CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
+            data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
+            self._log(f"Updated score for card {data} (delta={delta})")
+            return data
 
     def next_card_for_study(self, user_id: int, deck_id: int) -> Optional[CardData]:
         with self._session() as session:
@@ -188,6 +215,7 @@ class DeckService:
                 .all()
             )
             if not cards:
+                self._log(f"No cards available for study in deck {deck_id}")
                 return None
 
             max_score = max(card.score for card in cards)
@@ -197,9 +225,11 @@ class DeckService:
             # choices returns a list of k picks (with replacement); k=1 here, so take the first pick.
             # The chance of each pick is proportional to its weight.
             choice = self._rng.choices(cards, weights=weights, k=1)[0]
-            return CardData(
+            data = CardData(
                 id=choice.id, question=choice.question, answer=choice.answer, score=choice.score
             )
+            self._log(f"Selected next study card {data} from deck {deck_id}")
+            return data
 
     def seed_sample(self, user_id: int) -> None:
         """Create a sample deck with cards for quick demos."""
@@ -210,6 +240,7 @@ class DeckService:
                 .first()
             )
             if existing:
+                self._log("Sample deck already exists; skipping seed")
                 return
 
             deck = DeckRecord(name="Sample Deck", description="Getting started", user_id=user_id)
@@ -235,3 +266,4 @@ class DeckService:
             ]
             session.add_all(cards)
             session.commit()
+            self._log(f"Seeded sample deck with {len(cards)} cards for user {user_id}")
