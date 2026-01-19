@@ -32,6 +32,12 @@ class DeckCrudTests(DBTestCase):
         self.assertEqual(updated.question, "New Q")
         self.assertEqual(updated.answer, "Original A")
 
+    def test_update_deck_changes_name_and_description(self) -> None:
+        deck = self.service.create_deck(self.user_id, "Old", "Desc")
+        updated = self.service.update_deck(self.user_id, deck.id, "New", "New Desc")
+        self.assertEqual(updated.name, "New")
+        self.assertEqual(updated.description, "New Desc")
+
     def test_add_card_requires_question_and_answer(self) -> None:
         deck = self.service.create_deck(self.user_id, "Validation")
         with self.assertRaises(ValueError):

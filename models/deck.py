@@ -84,6 +84,25 @@ class DeckService:
             self._log(f"Created deck {data}")
             return data
 
+    def update_deck(self, user_id: int, deck_id: int, name: str, description: str = "") -> DeckData:
+        if not name:
+            raise ValueError("Deck name is required.")
+        with self._session() as session:
+            deck = (
+                session.query(DeckRecord)
+                .filter(DeckRecord.id == deck_id, DeckRecord.user_id == user_id)
+                .first()
+            )
+            if not deck:
+                raise ValueError("Deck not found.")
+            deck.name = name
+            deck.description = description
+            session.commit()
+            session.refresh(deck)
+            data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")
+            self._log(f"Updated deck {data}")
+            return data
+
     def list_decks(self, user_id: int) -> List[DeckData]:
         with self._session() as session:
             decks = (
