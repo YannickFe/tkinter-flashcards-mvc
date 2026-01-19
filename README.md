@@ -46,3 +46,11 @@ Unit tests cover deck scoring and selection logic:
 ```bash
 python -m unittest
 ```
+
+## Package / Submit
+
+To package this project for task submission, run:
+
+```bash
+git archive --format=zip HEAD -o tkinter-flashcards-mvc.zip
+```
