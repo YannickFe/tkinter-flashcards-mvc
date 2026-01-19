@@ -33,6 +33,7 @@ class Auth(ObservableModel):
         if not username or not password or not full_name:
             raise ValueError("Full name, username, and password are required.")
 
+        # Salt per user makes identical passwords hash differently and defeats precomputed tables.
         salt = secrets.token_hex(16)
         password_hash = self._hash_password(password, salt)
         with self._get_session() as session:
@@ -65,6 +66,7 @@ class Auth(ObservableModel):
         if not user:
             raise ValueError("Invalid username or password.")
 
+        # Recompute hash using the stored per-user salt.
         password_hash = self._hash_password(password, user.password_salt)
         if password_hash != user.password_hash:
             raise ValueError("Invalid username or password.")

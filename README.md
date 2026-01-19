@@ -1,6 +1,12 @@
-# TKINTER MVC MULTI-FRAME
+# TKINTER MVC FLASHCARD APP
 
-Tkinter is a common library for making Graphical User Interface (GUI) in Python. In this project, I designed a moderately complex Tkinter project with multiple frames following the MVC design pattern. I wrote an [article](https://nazmul-ahsan.medium.com/how-to-organize-multi-frame-tkinter-application-with-mvc-pattern-79247efbb02b) about it on Medium where I used this project as the example.
+> This is a fork of [AhsanShihab/tkinter-multiframe-mvc](https://github.com/AhsanShihab/tkinter-multiframe-mvc); see the
+> repo
+> and [the original article](https://nazmul-ahsan.medium.com/how-to-organize-multi-frame-tkinter-application-with-mvc-pattern-79247efbb02b)
+> for the baseline implementation. Changes here are built on their architectural foundation.
+
+A flashcard application built with Tkinter following the MVC pattern. Users can sign up, create decks of flashcards, and
+study them with spaced repetition based on card scores.
 
 To run the project,
 
@@ -18,10 +24,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-User accounts are stored locally in `app.db` (SQLite, managed via SQLAlchemy) and created the first time you sign up. Passwords are stored as salted hashes.
+User accounts are stored locally in `app.db` (SQLite, managed via SQLAlchemy) and created the first time you sign up.
+Passwords are stored as salted hashes so identical passwords produce different hashes and precomputed tables are
+ineffective.
 
 ## Features
-- MVC structure with frames for signup, sign-in, home, deck list, deck detail, and study.
+
+- MVC structure with dedicated views/forms for signup, sign-in, home, deck list, deck detail (with card table), deck
+  form, card form, and study.
 - Decks and cards are persisted per user. Cards store a score; studying presents lower-score cards more often. Marking “Memorized” increases the score, “Not Memorized” decreases it (floored at zero).
 - A sample deck seeds on first login to demonstrate flows.
 
