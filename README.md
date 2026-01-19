@@ -25,7 +25,7 @@ pip install -r requirements.txt
 ```
 
 User accounts are stored locally in `app.db` (SQLite, managed via SQLAlchemy) and created the first time you sign up.
-Passwords are stored as salted hashes so identical passwords produce different hashes and precomputed tables are
+Passwords are stored as salted bcrypt hashes so identical passwords produce different hashes and precomputed tables are
 ineffective.
 
 ## Features

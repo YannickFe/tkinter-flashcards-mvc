@@ -33,7 +33,6 @@ class DBTestCase(unittest.TestCase):
                 username=username,
                 full_name=full_name,
                 password_hash=password_hash,
-                password_salt="salt",
             )
             session.add(user)
             session.commit()

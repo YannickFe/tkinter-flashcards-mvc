@@ -1,7 +1,6 @@
-import hashlib
-import secrets
 from typing import Optional, TypedDict, Union
 
+import bcrypt
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -23,8 +22,14 @@ class Auth(ObservableModel):
         self.is_logged_in = False
         self.current_user: Union[User, None] = None
 
-    def _hash_password(self, password: str, salt: str) -> str:
-        return hashlib.sha256(f"{salt}{password}".encode("utf-8")).hexdigest()
+    def _hash_password(self, password: str) -> str:
+        """Hash with bcrypt; salt is embedded in the returned hash."""
+        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+        return hashed.decode("utf-8")
+
+    def _verify_password(self, password: str, hashed: str) -> bool:
+        """Check plaintext against stored bcrypt hash."""
+        return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
 
     def _get_session(self) -> Session:
         return SessionLocal()
@@ -33,15 +38,12 @@ class Auth(ObservableModel):
         if not username or not password or not full_name:
             raise ValueError("Full name, username, and password are required.")
 
-        # Salt per user makes identical passwords hash differently and defeats precomputed tables.
-        salt = secrets.token_hex(16)
-        password_hash = self._hash_password(password, salt)
+        password_hash = self._hash_password(password)
         with self._get_session() as session:
             user = UserRecord(
                 username=username,
                 full_name=full_name,
                 password_hash=password_hash,
-                password_salt=salt,
             )
             session.add(user)
             try:
@@ -66,9 +68,7 @@ class Auth(ObservableModel):
         if not user:
             raise ValueError("Invalid username or password.")
 
-        # Recompute hash using the stored per-user salt.
-        password_hash = self._hash_password(password, user.password_salt)
-        if password_hash != user.password_hash:
+        if not self._verify_password(password, user.password_hash):
             raise ValueError("Invalid username or password.")
 
         self.login({"id": user.id, "username": user.username, "full_name": user.full_name})
