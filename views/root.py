@@ -1,4 +1,5 @@
 from tkinter import Tk
+from views.theme import configure_theme
 
 
 class Root(Tk):
@@ -12,6 +13,7 @@ class Root(Tk):
     def __init__(self):
         super().__init__()
 
+        configure_theme(self)
         start_width = 500
         min_width = 400
         start_height = 300
