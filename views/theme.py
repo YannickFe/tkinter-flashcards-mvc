@@ -1,5 +1,4 @@
-from tkinter import Tk
-from tkinter import ttk
+from tkinter import ttk, Tk
 
 
 def configure_theme(root: Tk) -> None:
