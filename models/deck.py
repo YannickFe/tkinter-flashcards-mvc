@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from random import Random
 from dataclasses import dataclass
+from random import Random
 from typing import List, Optional
 
 from sqlalchemy import Column, ForeignKey, Integer, String, Text
@@ -74,7 +74,7 @@ class DeckService:
 
     def create_deck(self, user_id: int, name: str, description: str = "") -> DeckData:
         if not name:
-            raise ValueError("Deck name is required.")
+            raise ValueError("Deck name is required.")  # Validation: avoid blank decks.
         with self._session() as session:
             deck = DeckRecord(name=name, description=description, user_id=user_id)
             session.add(deck)
@@ -94,7 +94,7 @@ class DeckService:
                 .first()
             )
             if not deck:
-                raise ValueError("Deck not found.")
+                raise ValueError("Deck not found.")  # Missing or not owned by user.
             deck.name = name
             deck.description = description
             session.commit()
@@ -123,7 +123,7 @@ class DeckService:
                 .first()
             )
             if not deck:
-                raise ValueError("Deck not found.")
+                raise ValueError("Deck not found.")  # No deck for this user.
             session.delete(deck)
             session.commit()
             self._log(f"Deleted deck id={deck_id} for user {user_id}")
@@ -143,7 +143,7 @@ class DeckService:
 
     def add_card(self, user_id: int, deck_id: int, question: str, answer: str) -> CardData:
         if not question or not answer:
-            raise ValueError("Question and answer are required.")
+            raise ValueError("Question and answer are required.")  # Validation guard.
         with self._session() as session:
             deck = (
                 session.query(DeckRecord)
@@ -151,7 +151,7 @@ class DeckService:
                 .first()
             )
             if not deck:
-                raise ValueError("Deck not found.")
+                raise ValueError("Deck not found.")  # No deck for this user.
             card = CardRecord(
                 question=question, answer=answer, score=0, deck_id=deck_id, user_id=user_id
             )
@@ -172,7 +172,7 @@ class DeckService:
                 .first()
             )
             if not card:
-                raise ValueError("Card not found.")
+                raise ValueError("Card not found.")  # Missing or not owned by user.
             if question:
                 card.question = question
             if answer:

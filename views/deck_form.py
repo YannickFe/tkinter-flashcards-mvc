@@ -2,6 +2,8 @@ from tkinter import Frame, Label, Entry, Button, StringVar
 
 
 class DeckFormView(Frame):
+    """Simple form for deck name/description with save/cancel and inline message."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

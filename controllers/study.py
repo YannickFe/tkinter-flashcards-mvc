@@ -1,7 +1,7 @@
 from typing import Optional
 
-from models.main import Model
 from models.deck import CardData
+from models.main import Model
 from views.main import View
 
 
@@ -51,8 +51,8 @@ class StudyController:
             self.frame.set_message("")
             self.frame.question_var.set(f"Q: {card.question}")
             self.frame.answer_var.set("")
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
+        except ValueError as exception:
+            self.frame.set_message(str(exception))
 
     def show_answer(self) -> None:
         if not self.current_card:
@@ -73,8 +73,8 @@ class StudyController:
             )
             self.frame.set_message(f"Updated score: {updated.score}")
             self.load_next_card()
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
+        except ValueError as exception:
+            self.frame.set_message(str(exception))
 
     def back_to_deck(self) -> None:
         self.view.switch("deck_detail")

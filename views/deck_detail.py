@@ -2,6 +2,8 @@ from tkinter import Button, Frame, Label, Listbox, Scrollbar, StringVar
 
 
 class DeckDetailView(Frame):
+    """Deck detail view with card list and action controls."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

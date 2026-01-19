@@ -3,6 +3,7 @@ from tkinter import ttk, Tk
 
 def configure_theme(root: Tk) -> None:
     """Pick a simple built-in theme; prefer Aquativo/Adapta if present, else clam."""
+    # ttk gives us themed basics; tk widgets remain where ttk lacks equivalents.
     style = ttk.Style(root)
     preferred = ["aquativo", "Aquativo", "adapta", "Adapta", "clam"]
     available = style.theme_names()

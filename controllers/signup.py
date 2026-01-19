@@ -36,8 +36,8 @@ class SignUpController:
                 full_name=data["fullname"],
                 password=data["password"],
             )
-        except ValueError as exc:
-            messagebox.showerror("Sign Up Failed", str(exc))
+        except ValueError as exception:
+            messagebox.showerror("Sign Up Failed", str(exception))
             return
 
         self.clear_form()

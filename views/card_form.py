@@ -2,6 +2,8 @@ from tkinter import Frame, Label, Text, Button, StringVar
 
 
 class CardFormView(Frame):
+    """Simple card editor with question/answer fields, save/cancel, and inline message."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

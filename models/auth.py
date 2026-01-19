@@ -45,9 +45,9 @@ class Auth(ObservableModel):
             session.add(user)
             try:
                 session.commit()
-            except IntegrityError as exc:
+            except IntegrityError as exception:
                 session.rollback()
-                raise ValueError("Username already exists.") from exc
+                raise ValueError("Username already exists.") from exception
             session.refresh(user)
 
         self.login({"id": user.id, "username": user.username, "full_name": user.full_name})

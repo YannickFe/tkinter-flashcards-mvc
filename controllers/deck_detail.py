@@ -10,6 +10,7 @@ from views.main import View
 
 class DeckDetailController:
     def __init__(self, model: Model, view: View):
+        """Show cards for a deck and route add/edit/study actions to other controllers."""
         self.model = model
         self.view = view
         self.frame = self.view.frames["deck_detail"]
@@ -35,6 +36,7 @@ class DeckDetailController:
         self.frame.back_btn.config(command=self.back_to_decks)
 
     def _require_user(self) -> int:
+        """Guard against anonymous access and return user id."""
         user = self.model.auth.current_user
         if not user:
             raise ValueError("You must be signed in.")
@@ -50,10 +52,12 @@ class DeckDetailController:
             self.frame.set_title(deck.name)
             self.refresh_cards()
             self.frame.set_message("")
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
+        except ValueError as exception:
+            # Typical issues: not signed in or deck not found for this user.
+            self.frame.set_message(str(exception))
 
     def refresh_cards(self) -> None:
+        """Reload cards into the list."""
         if self.current_deck_id is None:
             return
         try:
@@ -65,10 +69,12 @@ class DeckDetailController:
                 display = f"Q: {card.question[:30]}... | Score: {card.score}"
                 self.frame.cards_list.insert(END, display)
             self.frame.set_message("")
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
+        except ValueError as exception:
+            # Likely missing auth or deck/cards no longer exist.
+            self.frame.set_message(str(exception))
 
     def _selected_card(self) -> Optional[CardData]:
+        """Return the selected card (or None)."""
         selection = self.frame.cards_list.curselection()
         if not selection:
             return None
@@ -105,8 +111,9 @@ class DeckDetailController:
                 user_id = self._require_user()
                 self.model.decks.delete_card(user_id=user_id, card_id=card.id)
                 self.refresh_cards()
-            except ValueError as exc:
-                self.frame.set_message(str(exc))
+            except ValueError as exception:
+                # Missing auth or card already removed.
+                self.frame.set_message(str(exception))
 
     def start_study(self) -> None:
         if not self.study_controller or self.current_deck_id is None:

@@ -10,6 +10,7 @@ from views.main import View
 
 class DeckListController:
     def __init__(self, model: Model, view: View):
+        """List decks for the current user and hand off to detail/form controllers."""
         self.model = model
         self.view = view
         self.frame = self.view.frames["deck_list"]
@@ -33,6 +34,7 @@ class DeckListController:
         self.frame.back_btn.config(command=lambda: self.view.switch("home"))
 
     def _require_user(self) -> int:
+        """Guard against anonymous access and return user id."""
         user = self.model.auth.current_user
         if not user:
             raise ValueError("You must be signed in.")
@@ -49,10 +51,12 @@ class DeckListController:
             for deck in decks:
                 self.frame.deck_list.insert("end", f"{deck.name} — {deck.description}")
             self.frame.set_message("")
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
+        except ValueError as exception:
+            # Missing auth or fetch failure; surface message to the list view.
+            self.frame.set_message(str(exception))
 
     def _selected_deck(self) -> Optional[DeckData]:
+        """Return the currently highlighted deck, or None."""
         selection = self.frame.deck_list.curselection()
         if not selection:
             return None
@@ -62,12 +66,14 @@ class DeckListController:
         return self._decks[index]
 
     def new_deck(self) -> None:
+        """Open deck form in create mode."""
         if not self.form_controller:
             self.frame.set_message("Deck form unavailable.")
             return
         self.form_controller.start_create()
 
     def edit_deck(self) -> None:
+        """Open deck form in edit mode for the selected deck."""
         deck = self._selected_deck()
         if not deck:
             self.frame.set_message("Select a deck to edit.")
@@ -78,6 +84,7 @@ class DeckListController:
         self.form_controller.start_edit(deck)
 
     def open_deck(self) -> None:
+        """Load selected deck into detail view."""
         deck = self._selected_deck()
         if not deck:
             self.frame.set_message("Select a deck to open.")
@@ -89,6 +96,7 @@ class DeckListController:
         self.view.switch("deck_detail")
 
     def delete_deck(self) -> None:
+        """Remove the selected deck after confirmation."""
         deck = self._selected_deck()
         if not deck:
             self.frame.set_message("Select a deck to delete.")
@@ -98,5 +106,6 @@ class DeckListController:
                 user_id = self._require_user()
                 self.model.decks.delete_deck(user_id=user_id, deck_id=deck.id)
                 self.refresh()
-            except ValueError as exc:
-                self.frame.set_message(str(exc))
+            except ValueError as exception:
+                # Deleting without auth or against a missing deck.
+                self.frame.set_message(str(exception))

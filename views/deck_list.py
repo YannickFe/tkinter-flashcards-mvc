@@ -2,6 +2,8 @@ from tkinter import Button, Frame, Label, Listbox, Scrollbar, StringVar
 
 
 class DeckListView(Frame):
+    """List decks with grouped actions for CRUD and navigation."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

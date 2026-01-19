@@ -1,10 +1,11 @@
-from models.main import Model
 from models.deck import CardData
+from models.main import Model
 from views.main import View
 
 
 class CardFormController:
     def __init__(self, model: Model, view: View, deck_detail_controller):
+        """Handle create/edit of cards via the card form view."""
         self.model = model
         self.view = view
         self.deck_detail_controller = deck_detail_controller
@@ -15,6 +16,7 @@ class CardFormController:
         self._bind()
 
     def _require_user(self) -> int:
+        """Guard against anonymous access and return user id."""
         user = self.model.auth.current_user
         if not user:
             raise ValueError("You must be signed in.")
@@ -25,6 +27,7 @@ class CardFormController:
         self.frame.cancel_btn.config(command=self.cancel)
 
     def start_create(self, deck_id: int, deck_name: str) -> None:
+        """Open the form in create mode."""
         self.current_deck_id = deck_id
         self.current_deck_name = deck_name
         self.current_card_id = None
@@ -34,6 +37,7 @@ class CardFormController:
         self.view.switch("card_form")
 
     def start_edit(self, deck_id: int, deck_name: str, card: CardData) -> None:
+        """Open the form in edit mode for an existing card."""
         self.current_deck_id = deck_id
         self.current_deck_name = deck_name
         self.current_card_id = card.id
@@ -45,6 +49,7 @@ class CardFormController:
         self.view.switch("card_form")
 
     def save(self) -> None:
+        """Persist changes and return to deck detail."""
         question = self.frame.question_input.get("1.0", "end").strip()
         answer = self.frame.answer_input.get("1.0", "end").strip()
         if self.current_deck_id is None:
@@ -62,8 +67,9 @@ class CardFormController:
                 )
             self.deck_detail_controller.load_deck(self.current_deck_id)
             self.view.switch("deck_detail")
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
+        except ValueError as exception:
+            # Validation errors (empty fields) or missing auth/deck context.
+            self.frame.set_message(str(exception))
 
     def cancel(self) -> None:
         self.view.switch("deck_detail")
