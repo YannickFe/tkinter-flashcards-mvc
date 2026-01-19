@@ -8,6 +8,8 @@ from views.home import HomeView
 from views.signin import SignInView
 from views.signup import SignUpView
 from views.study import StudyView
+from views.deck_form import DeckFormView
+from views.card_form import CardFormView
 
 
 class Frames(TypedDict):
@@ -18,6 +20,8 @@ class Frames(TypedDict):
     deck_list: DeckListView
     deck_detail: DeckDetailView
     study: StudyView
+    deck_form: DeckFormView
+    card_form: CardFormView
 
 
 class View:
@@ -34,6 +38,8 @@ class View:
         self._add_frame(DeckListView, "deck_list")
         self._add_frame(DeckDetailView, "deck_detail")
         self._add_frame(StudyView, "study")
+        self._add_frame(DeckFormView, "deck_form")
+        self._add_frame(CardFormView, "card_form")
 
     def _add_frame(self, frame_class: type, name: str) -> None:
         if not issubclass(frame_class, Frame):

@@ -1,9 +1,10 @@
-from typing import List, Optional
 from tkinter import END, messagebox
+from typing import List, Optional
 
+from controllers.card_form import CardFormController
 from controllers.study import StudyController
-from models.main import Model
 from models.deck import CardData
+from models.main import Model
 from views.main import View
 
 
@@ -13,12 +14,17 @@ class DeckDetailController:
         self.view = view
         self.frame = self.view.frames["deck_detail"]
         self.study_controller: StudyController | None = None
+        self.card_form_controller: CardFormController | None = None
         self.current_deck_id: int | None = None
+        self.current_deck_name: str = ""
         self.current_cards: List[CardData] = []
         self._bind()
 
     def set_study_controller(self, controller: StudyController) -> None:
         self.study_controller = controller
+
+    def set_card_form_controller(self, controller: "CardFormController") -> None:
+        self.card_form_controller = controller
 
     def _bind(self) -> None:
         """Bind deck detail actions."""
@@ -27,7 +33,6 @@ class DeckDetailController:
         self.frame.delete_card_btn.config(command=self.delete_card)
         self.frame.study_btn.config(command=self.start_study)
         self.frame.back_btn.config(command=self.back_to_decks)
-        self.frame.cards_list.bind("<<ListboxSelect>>", self.on_card_select)
 
     def _require_user(self) -> int:
         user = self.model.auth.current_user
@@ -41,6 +46,7 @@ class DeckDetailController:
             user_id = self._require_user()
             deck = self.model.decks.get_deck(user_id=user_id, deck_id=deck_id)
             self.current_deck_id = deck.id
+            self.current_deck_name = deck.name
             self.frame.set_title(deck.name)
             self.refresh_cards()
             self.frame.set_message("")
@@ -72,36 +78,22 @@ class DeckDetailController:
         return self.current_cards[index]
 
     def add_card(self) -> None:
-        if self.current_deck_id is None:
-            self.frame.set_message("No deck selected.")
+        if self.current_deck_id is None or not self.card_form_controller:
+            self.frame.set_message("Card form unavailable.")
             return
-        question = self.frame.question_input.get("1.0", END).strip()
-        answer = self.frame.answer_input.get("1.0", END).strip()
-        try:
-            user_id = self._require_user()
-            self.model.decks.add_card(
-                user_id=user_id, deck_id=self.current_deck_id, question=question, answer=answer
-            )
-            self.frame.clear_inputs()
-            self.refresh_cards()
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
+        self.card_form_controller.start_create(self.current_deck_id, self.current_deck_name)
 
     def update_card(self) -> None:
         card = self._selected_card()
         if not card:
-            self.frame.set_message("Select a card to update.")
+            self.frame.set_message("Select a card to edit.")
             return
-        question = self.frame.question_input.get("1.0", END).strip()
-        answer = self.frame.answer_input.get("1.0", END).strip()
-        try:
-            user_id = self._require_user()
-            self.model.decks.update_card(
-                user_id=user_id, card_id=card.id, question=question, answer=answer
-            )
-            self.refresh_cards()
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
+        if self.current_deck_id is None or not self.card_form_controller:
+            self.frame.set_message("Card form unavailable.")
+            return
+        self.card_form_controller.start_edit(
+            deck_id=self.current_deck_id, deck_name=self.current_deck_name, card=card
+        )
 
     def delete_card(self) -> None:
         card = self._selected_card()
@@ -115,15 +107,6 @@ class DeckDetailController:
                 self.refresh_cards()
             except ValueError as exc:
                 self.frame.set_message(str(exc))
-
-    def on_card_select(self, event) -> None:
-        card = self._selected_card()
-        if not card:
-            return
-        self.frame.question_input.delete("1.0", END)
-        self.frame.question_input.insert("1.0", card.question)
-        self.frame.answer_input.delete("1.0", END)
-        self.frame.answer_input.insert("1.0", card.answer)
 
     def start_study(self) -> None:
         if not self.study_controller or self.current_deck_id is None:

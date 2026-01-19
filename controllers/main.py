@@ -8,6 +8,8 @@ from controllers.signup import SignUpController
 from controllers.deck_list import DeckListController
 from controllers.deck_detail import DeckDetailController
 from controllers.study import StudyController
+from controllers.deck_form import DeckFormController
+from controllers.card_form import CardFormController
 
 
 class Controller:
@@ -19,12 +21,20 @@ class Controller:
         self.deck_list_controller = DeckListController(model, view)
         self.deck_detail_controller = DeckDetailController(model, view)
         self.study_controller = StudyController(model, view)
+        self.deck_form_controller = DeckFormController(
+            model, view, deck_list_controller=self.deck_list_controller
+        )
+        self.card_form_controller = CardFormController(
+            model, view, deck_detail_controller=self.deck_detail_controller
+        )
         self.home_controller = HomeController(
             model, view, deck_list_controller=self.deck_list_controller
         )
 
         self.deck_list_controller.set_detail_controller(self.deck_detail_controller)
+        self.deck_list_controller.set_form_controller(self.deck_form_controller)
         self.deck_detail_controller.set_study_controller(self.study_controller)
+        self.deck_detail_controller.set_card_form_controller(self.card_form_controller)
 
         self.model.auth.add_event_listener("auth_changed", self.auth_state_listener)
 

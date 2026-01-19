@@ -1,9 +1,10 @@
-from typing import List, Optional
 from tkinter import messagebox
+from typing import List, Optional
 
 from controllers.deck_detail import DeckDetailController
-from models.main import Model
+from controllers.deck_form import DeckFormController
 from models.deck import DeckData
+from models.main import Model
 from views.main import View
 
 
@@ -13,15 +14,20 @@ class DeckListController:
         self.view = view
         self.frame = self.view.frames["deck_list"]
         self.detail_controller: DeckDetailController | None = None
+        self.form_controller: DeckFormController | None = None
         self._decks: List[DeckData] = []
         self._bind()
 
-    def set_detail_controller(self, controller: DeckDetailController) -> None:
+    def set_detail_controller(self, controller: "DeckDetailController") -> None:
         self.detail_controller = controller
+
+    def set_form_controller(self, controller: "DeckFormController") -> None:
+        self.form_controller = controller
 
     def _bind(self) -> None:
         """Bind list view actions."""
-        self.frame.create_btn.config(command=self.create_deck)
+        self.frame.create_btn.config(command=self.new_deck)
+        self.frame.edit_btn.config(command=self.edit_deck)
         self.frame.open_btn.config(command=self.open_deck)
         self.frame.delete_btn.config(command=self.delete_deck)
         self.frame.back_btn.config(command=lambda: self.view.switch("home"))
@@ -46,17 +52,6 @@ class DeckListController:
         except ValueError as exc:
             self.frame.set_message(str(exc))
 
-    def create_deck(self) -> None:
-        name = self.frame.name_input.get()
-        description = self.frame.desc_input.get()
-        try:
-            user_id = self._require_user()
-            self.model.decks.create_deck(user_id=user_id, name=name, description=description)
-            self.frame.clear_inputs()
-            self.refresh()
-        except ValueError as exc:
-            self.frame.set_message(str(exc))
-
     def _selected_deck(self) -> Optional[DeckData]:
         selection = self.frame.deck_list.curselection()
         if not selection:
@@ -65,6 +60,22 @@ class DeckListController:
         if index >= len(self._decks):
             return None
         return self._decks[index]
+
+    def new_deck(self) -> None:
+        if not self.form_controller:
+            self.frame.set_message("Deck form unavailable.")
+            return
+        self.form_controller.start_create()
+
+    def edit_deck(self) -> None:
+        deck = self._selected_deck()
+        if not deck:
+            self.frame.set_message("Select a deck to edit.")
+            return
+        if not self.form_controller:
+            self.frame.set_message("Deck form unavailable.")
+            return
+        self.form_controller.start_edit(deck)
 
     def open_deck(self) -> None:
         deck = self._selected_deck()
