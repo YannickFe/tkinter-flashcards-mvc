@@ -1,12 +1,14 @@
 from tkinter import messagebox
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
-from controllers.deck_detail import DeckDetailController
-from controllers.deck_form import DeckFormController
 from controllers.utils import require_user_id, truncate_and_pad
 from models.deck import DeckData
 from models.main import MainModel
 from views.main import MainView
+
+if TYPE_CHECKING:
+    from controllers.deck_detail import DeckDetailController
+    from controllers.deck_form import DeckFormController
 
 
 class DeckListController:
@@ -15,15 +17,15 @@ class DeckListController:
         self.main_model = main_model
         self.main_view = main_view
         self.frame = self.main_view.frames["deck_list"]
-        self.detail_controller: DeckDetailController | None = None
-        self.form_controller: DeckFormController | None = None
+        self.detail_controller: "DeckDetailController | None" = None
+        self.form_controller: "DeckFormController | None" = None
         self._decks: List[DeckData] = []
         self._bind()
 
-    def set_detail_controller(self, controller: DeckDetailController) -> None:
+    def set_detail_controller(self, controller: "DeckDetailController") -> None:
         self.detail_controller = controller
 
-    def set_form_controller(self, controller: DeckFormController) -> None:
+    def set_form_controller(self, controller: "DeckFormController") -> None:
         self.form_controller = controller
 
     def _bind(self) -> None:

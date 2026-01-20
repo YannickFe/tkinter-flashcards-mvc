@@ -1,9 +1,12 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from controllers.utils import require_user_id
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
+
+if TYPE_CHECKING:
+    from controllers.deck_detail import DeckDetailController
 
 
 class StudyController:

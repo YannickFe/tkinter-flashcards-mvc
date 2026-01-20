@@ -1,12 +1,14 @@
 from tkinter import END, messagebox
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
-from controllers.card_form import CardFormController
-from controllers.study import StudyController
 from controllers.utils import require_user_id, truncate_and_pad
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
+
+if TYPE_CHECKING:
+    from controllers.card_form import CardFormController
+    from controllers.study import StudyController
 
 
 class DeckDetailController:
@@ -15,17 +17,17 @@ class DeckDetailController:
         self.main_model = main_model
         self.main_view = main_view
         self.frame = self.main_view.frames["deck_detail"]
-        self.study_controller: StudyController | None = None
-        self.card_form_controller: CardFormController | None = None
+        self.study_controller: "StudyController | None" = None
+        self.card_form_controller: "CardFormController | None" = None
         self.current_deck_id: int | None = None
         self.current_deck_name: str = ""
         self.current_cards: List[CardData] = []
         self._bind()
 
-    def set_study_controller(self, controller: StudyController) -> None:
+    def set_study_controller(self, controller: "StudyController") -> None:
         self.study_controller = controller
 
-    def set_card_form_controller(self, controller: CardFormController) -> None:
+    def set_card_form_controller(self, controller: "CardFormController") -> None:
         self.card_form_controller = controller
 
     def _bind(self) -> None:
