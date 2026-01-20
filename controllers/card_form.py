@@ -1,4 +1,4 @@
-from controllers.utils import require_user_id
+from controllers.utils import require_user
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
@@ -50,14 +50,14 @@ class CardFormController:
             self.frame.set_message("No deck selected.")
             return
         try:
-            user_id = require_user_id(self.main_model.auth)
+            user = require_user(self.main_model.auth)
             if self.current_card_id is None:
                 self.main_model.decks.add_card(
-                    user_id=user_id, deck_id=self.current_deck_id, question=question, answer=answer
+                    user_id=user.id, deck_id=self.current_deck_id, question=question, answer=answer
                 )
             else:
                 self.main_model.decks.update_card(
-                    user_id=user_id, card_id=self.current_card_id, question=question, answer=answer
+                    user_id=user.id, card_id=self.current_card_id, question=question, answer=answer
                 )
             self.deck_detail_controller.load_deck(self.current_deck_id)
             self.main_view.switch("deck_detail")

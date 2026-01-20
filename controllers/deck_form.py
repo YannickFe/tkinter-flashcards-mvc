@@ -1,4 +1,4 @@
-from controllers.utils import require_user_id
+from controllers.utils import require_user
 from models.deck import DeckData
 from models.main import MainModel
 from views.main import MainView
@@ -41,12 +41,12 @@ class DeckFormController:
         name = self.frame.name_input.get().strip()
         desc = self.frame.desc_input.get().strip()
         try:
-            user_id = require_user_id(self.main_model.auth)
+            user = require_user(self.main_model.auth)
             if self.current_deck_id is None:
-                self.main_model.decks.create_deck(user_id=user_id, name=name, description=desc)
+                self.main_model.decks.create_deck(user_id=user.id, name=name, description=desc)
             else:
                 self.main_model.decks.update_deck(
-                    user_id=user_id, deck_id=self.current_deck_id, name=name, description=desc
+                    user_id=user.id, deck_id=self.current_deck_id, name=name, description=desc
                 )
             self.deck_list_controller.refresh()
             self.main_view.switch("deck_list")

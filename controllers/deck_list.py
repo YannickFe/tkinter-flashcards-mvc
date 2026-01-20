@@ -1,7 +1,7 @@
 from tkinter import messagebox
 from typing import List, Optional, TYPE_CHECKING
 
-from controllers.utils import require_user_id, truncate_and_pad
+from controllers.utils import require_user, truncate_and_pad
 from models.deck import DeckData
 from models.main import MainModel
 from views.main import MainView
@@ -41,8 +41,8 @@ class DeckListController:
         self._decks = []
         self.frame.deck_list.delete(0, "end")
         try:
-            user_id = require_user_id(self.main_model.auth)
-            decks = self.main_model.decks.list_decks(user_id=user_id)
+            user = require_user(self.main_model.auth)
+            decks = self.main_model.decks.list_decks(user_id=user.id)
             self._decks = decks
             for deck in decks:
                 name = truncate_and_pad(deck.name, 22)
@@ -101,8 +101,8 @@ class DeckListController:
             return
         if messagebox.askyesno("Delete Deck", f"Delete '{deck.name}'?"):
             try:
-                user_id = require_user_id(self.main_model.auth)
-                self.main_model.decks.delete_deck(user_id=user_id, deck_id=deck.id)
+                user = require_user(self.main_model.auth)
+                self.main_model.decks.delete_deck(user_id=user.id, deck_id=deck.id)
                 self.refresh()
             except ValueError as exception:
                 # Deleting without auth or against a missing deck.

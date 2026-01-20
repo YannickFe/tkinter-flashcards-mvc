@@ -25,7 +25,7 @@ class HomeController:
     def update_view(self) -> None:
         current_user = self.main_model.auth.current_user
         if current_user:
-            name = current_user.get("full_name") or current_user["username"]
+            name = current_user.full_name or current_user.username
             self.frame.greeting.config(text=f"Welcome, {name}!")
         else:
             self.frame.greeting.config(text=f"")

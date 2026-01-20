@@ -1,12 +1,12 @@
-from models.auth import Auth
+from models.user import UserData, UserService
 
 
-def require_user_id(auth: Auth) -> int:
-    """Return the current user id or raise if nobody is signed in."""
+def require_user(auth: UserService) -> UserData:
+    """Return the current user or raise if nobody is signed in."""
     user = auth.current_user
     if not user:
         raise ValueError("You must be signed in.")
-    return user["id"]
+    return user
 
 
 def truncate_and_pad(text: str, width: int) -> str:

@@ -6,8 +6,8 @@ from controllers.home import HomeController
 from controllers.signin import SignInController
 from controllers.signup import SignUpController
 from controllers.study import StudyController
-from models.auth import Auth
 from models.main import MainModel
+from models.user import UserService
 from views.main import MainView
 
 
@@ -41,10 +41,10 @@ class MainController:
         # React to auth state changes (login/logout).
         self.main_model.auth.add_event_listener("auth_changed", self.auth_state_listener)
 
-    def auth_state_listener(self, data: Auth) -> None:
+    def auth_state_listener(self, data: UserService) -> None:
         if data.is_logged_in:
             if data.current_user:
-                self.main_model.decks.seed_sample(data.current_user["id"])
+                self.main_model.decks.seed_sample(data.current_user.id)
             self.deck_list_controller.refresh()
             self.home_controller.update_view()
             self.main_view.switch("home")

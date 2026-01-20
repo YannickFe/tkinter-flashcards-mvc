@@ -1,7 +1,7 @@
 from tkinter import END, messagebox
 from typing import List, Optional, TYPE_CHECKING
 
-from controllers.utils import require_user_id, truncate_and_pad
+from controllers.utils import require_user, truncate_and_pad
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
@@ -41,8 +41,8 @@ class DeckDetailController:
     def load_deck(self, deck_id: int) -> None:
         """Load deck metadata and cards."""
         try:
-            user_id = require_user_id(self.main_model.auth)
-            deck = self.main_model.decks.get_deck(user_id=user_id, deck_id=deck_id)
+            user = require_user(self.main_model.auth)
+            deck = self.main_model.decks.get_deck(user_id=user.id, deck_id=deck_id)
             self.current_deck_id = deck.id
             self.current_deck_name = deck.name
             self.frame.set_title(deck.name)
@@ -57,8 +57,8 @@ class DeckDetailController:
         if self.current_deck_id is None:
             return
         try:
-            user_id = require_user_id(self.main_model.auth)
-            cards = self.main_model.decks.list_cards(user_id=user_id, deck_id=self.current_deck_id)
+            user = require_user(self.main_model.auth)
+            cards = self.main_model.decks.list_cards(user_id=user.id, deck_id=self.current_deck_id)
             self.current_cards = cards
             self.frame.cards_list.delete(0, END)
             for card in cards:
@@ -105,8 +105,8 @@ class DeckDetailController:
             return
         if messagebox.askyesno("Delete Card", "Delete this card?"):
             try:
-                user_id = require_user_id(self.main_model.auth)
-                self.main_model.decks.delete_card(user_id=user_id, card_id=card.id)
+                user = require_user(self.main_model.auth)
+                self.main_model.decks.delete_card(user_id=user.id, card_id=card.id)
                 self.refresh_cards()
             except ValueError as exception:
                 # Missing auth or card already removed.
@@ -117,8 +117,8 @@ class DeckDetailController:
             self.frame.set_message("Study controller unavailable.")
             return
         try:
-            user_id = require_user_id(self.main_model.auth)
-            deck = self.main_model.decks.get_deck(user_id=user_id, deck_id=self.current_deck_id)
+            user = require_user(self.main_model.auth)
+            deck = self.main_model.decks.get_deck(user_id=user.id, deck_id=self.current_deck_id)
             self.study_controller.start(deck_id=self.current_deck_id, deck_name=deck.name)
             self.main_view.switch("study")
         except ValueError as exception:

@@ -1,6 +1,6 @@
 from typing import Optional, TYPE_CHECKING
 
-from controllers.utils import require_user_id
+from controllers.utils import require_user
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
@@ -41,9 +41,9 @@ class StudyController:
             self.frame.set_message("No deck selected.")
             return
         try:
-            user_id = require_user_id(self.main_model.auth)
+            user = require_user(self.main_model.auth)
             card = self.main_model.decks.next_card_for_study(
-                user_id=user_id, deck_id=self.current_deck_id
+                user_id=user.id, deck_id=self.current_deck_id
             )
             self.current_card = card
             if not card:
@@ -69,9 +69,9 @@ class StudyController:
             self.frame.set_message("No deck selected.")
             return
         try:
-            user_id = require_user_id(self.main_model.auth)
+            user = require_user(self.main_model.auth)
             updated = self.main_model.decks.update_score(
-                user_id=user_id, card_id=self.current_card.id, delta=delta
+                user_id=user.id, card_id=self.current_card.id, delta=delta
             )
             self.frame.set_message(f"Updated score: {updated.score}")
             self.load_next_card()
