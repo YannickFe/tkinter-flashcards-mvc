@@ -1,4 +1,5 @@
 from tkinter import Tk
+
 from views.theme import configure_theme
 
 
@@ -21,7 +22,7 @@ class Root(Tk):
 
         self.geometry(f"{start_width}x{start_height}")
         self.minsize(width=min_width, height=min_height)
-        self.title("TKinter MVC Multi-frame GUI")
+        self.title("TKinter MVC Flashcard App")
         # Give row/col 0 stretch weight so stacked frames fill and grow with the window.
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
