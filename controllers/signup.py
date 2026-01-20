@@ -1,14 +1,14 @@
 from tkinter import messagebox
 
-from models.main import Model
-from views.main import View
+from models.main import MainModel
+from views.main import MainView
 
 
 class SignUpController:
-    def __init__(self, model: Model, view: View):
-        self.model = model
-        self.view = view
-        self.frame = self.view.frames["signup"]
+    def __init__(self, main_model: MainModel, main_view: MainView):
+        self.main_model = main_model
+        self.main_view = main_view
+        self.frame = self.main_view.frames["signup"]
         self._bind()
 
     def _bind(self) -> None:
@@ -17,7 +17,7 @@ class SignUpController:
         self.frame.signin_btn.config(command=self.signin)
 
     def signin(self) -> None:
-        self.view.switch("signin")
+        self.main_view.switch("signin")
 
     def signup(self) -> None:
         data = {
@@ -31,7 +31,7 @@ class SignUpController:
             return
 
         try:
-            self.model.auth.register_user(
+            self.main_model.auth.register_user(
                 username=data["username"],
                 full_name=data["fullname"],
                 password=data["password"],

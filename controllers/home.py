@@ -1,13 +1,13 @@
-from models.main import Model
-from views.main import View
+from models.main import MainModel
+from views.main import MainView
 
 
 class HomeController:
-    def __init__(self, model: Model, view: View, deck_list_controller) -> None:
-        self.model = model
-        self.view = view
+    def __init__(self, main_model: MainModel, main_view: MainView, deck_list_controller) -> None:
+        self.main_model = main_model
+        self.main_view = main_view
         self.deck_list_controller = deck_list_controller
-        self.frame = self.view.frames["home"]
+        self.frame = self.main_view.frames["home"]
         self._bind()
 
     def _bind(self) -> None:
@@ -16,14 +16,14 @@ class HomeController:
         self.frame.deck_btn.config(command=self.switch_to_decks)
 
     def logout(self) -> None:
-        self.model.auth.logout()
+        self.main_model.auth.logout()
 
     def switch_to_decks(self) -> None:
         self.deck_list_controller.refresh()
-        self.view.switch("deck_list")
+        self.main_view.switch("deck_list")
 
     def update_view(self) -> None:
-        current_user = self.model.auth.current_user
+        current_user = self.main_model.auth.current_user
         if current_user:
             name = current_user.get("full_name") or current_user["username"]
             self.frame.greeting.config(text=f"Welcome, {name}!")

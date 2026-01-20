@@ -1,22 +1,22 @@
 from typing import Optional
 
 from models.deck import CardData
-from models.main import Model
-from views.main import View
+from models.main import MainModel
+from views.main import MainView
 
 
 class StudyController:
-    def __init__(self, model: Model, view: View):
-        self.model = model
-        self.view = view
-        self.frame = self.view.frames["study"]
+    def __init__(self, main_model: MainModel, main_view: MainView):
+        self.main_model = main_model
+        self.main_view = main_view
+        self.frame = self.main_view.frames["study"]
         self.current_deck_id: int | None = None
         self.current_deck_name: str = ""
         self.current_card: Optional[CardData] = None
         self._bind()
 
     def _require_user(self) -> int:
-        user = self.model.auth.current_user
+        user = self.main_model.auth.current_user
         if not user:
             raise ValueError("You must be signed in.")
         return user["id"]
@@ -40,7 +40,7 @@ class StudyController:
             return
         try:
             user_id = self._require_user()
-            card = self.model.decks.next_card_for_study(
+            card = self.main_model.decks.next_card_for_study(
                 user_id=user_id, deck_id=self.current_deck_id
             )
             self.current_card = card
@@ -68,7 +68,7 @@ class StudyController:
             return
         try:
             user_id = self._require_user()
-            updated = self.model.decks.update_score(
+            updated = self.main_model.decks.update_score(
                 user_id=user_id, card_id=self.current_card.id, delta=delta
             )
             self.frame.set_message(f"Updated score: {updated.score}")
@@ -77,4 +77,4 @@ class StudyController:
             self.frame.set_message(str(exception))
 
     def back_to_deck(self) -> None:
-        self.view.switch("deck_detail")
+        self.main_view.switch("deck_detail")

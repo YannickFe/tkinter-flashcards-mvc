@@ -1,15 +1,15 @@
 from tkinter import Frame
 from typing import TypedDict
 
-from views.deck_list import DeckListView
+from views.card_form import CardFormView
 from views.deck_detail import DeckDetailView
-from views.root import Root
+from views.deck_form import DeckFormView
+from views.deck_list import DeckListView
 from views.home import HomeView
+from views.root import Root
 from views.signin import SignInView
 from views.signup import SignUpView
 from views.study import StudyView
-from views.deck_form import DeckFormView
-from views.card_form import CardFormView
 
 
 class Frames(TypedDict):
@@ -24,7 +24,7 @@ class Frames(TypedDict):
     card_form: CardFormView
 
 
-class View:
+class MainView:
     def __init__(self):
         # Root Tk window that hosts all frames.
         self.root = Root()

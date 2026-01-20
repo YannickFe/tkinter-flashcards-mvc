@@ -4,25 +4,25 @@ from typing import List, Optional
 from controllers.deck_detail import DeckDetailController
 from controllers.deck_form import DeckFormController
 from models.deck import DeckData
-from models.main import Model
-from views.main import View
+from models.main import MainModel
+from views.main import MainView
 
 
 class DeckListController:
-    def __init__(self, model: Model, view: View):
+    def __init__(self, main_model: MainModel, main_view: MainView):
         """List decks for the current user and hand off to detail/form controllers."""
-        self.model = model
-        self.view = view
-        self.frame = self.view.frames["deck_list"]
+        self.main_model = main_model
+        self.main_view = main_view
+        self.frame = self.main_view.frames["deck_list"]
         self.detail_controller: DeckDetailController | None = None
         self.form_controller: DeckFormController | None = None
         self._decks: List[DeckData] = []
         self._bind()
 
-    def set_detail_controller(self, controller: "DeckDetailController") -> None:
+    def set_detail_controller(self, controller: DeckDetailController) -> None:
         self.detail_controller = controller
 
-    def set_form_controller(self, controller: "DeckFormController") -> None:
+    def set_form_controller(self, controller: DeckFormController) -> None:
         self.form_controller = controller
 
     def _bind(self) -> None:
@@ -31,11 +31,11 @@ class DeckListController:
         self.frame.edit_btn.config(command=self.edit_deck)
         self.frame.open_btn.config(command=self.open_deck)
         self.frame.delete_btn.config(command=self.delete_deck)
-        self.frame.back_btn.config(command=lambda: self.view.switch("home"))
+        self.frame.back_btn.config(command=lambda: self.main_view.switch("home"))
 
     def _require_user(self) -> int:
         """Guard against anonymous access and return user id."""
-        user = self.model.auth.current_user
+        user = self.main_model.auth.current_user
         if not user:
             raise ValueError("You must be signed in.")
         return user["id"]
@@ -46,7 +46,7 @@ class DeckListController:
         self.frame.deck_list.delete(0, "end")
         try:
             user_id = self._require_user()
-            decks = self.model.decks.list_decks(user_id=user_id)
+            decks = self.main_model.decks.list_decks(user_id=user_id)
             self._decks = decks
             for deck in decks:
                 self.frame.deck_list.insert("end", f"{deck.name} — {deck.description}")
@@ -93,7 +93,7 @@ class DeckListController:
             self.frame.set_message("Deck detail controller unavailable.")
             return
         self.detail_controller.load_deck(deck.id)
-        self.view.switch("deck_detail")
+        self.main_view.switch("deck_detail")
 
     def delete_deck(self) -> None:
         """Remove the selected deck after confirmation."""
@@ -104,7 +104,7 @@ class DeckListController:
         if messagebox.askyesno("Delete Deck", f"Delete '{deck.name}'?"):
             try:
                 user_id = self._require_user()
-                self.model.decks.delete_deck(user_id=user_id, deck_id=deck.id)
+                self.main_model.decks.delete_deck(user_id=user_id, deck_id=deck.id)
                 self.refresh()
             except ValueError as exception:
                 # Deleting without auth or against a missing deck.

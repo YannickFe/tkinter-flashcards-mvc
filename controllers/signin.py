@@ -1,14 +1,14 @@
 from tkinter import messagebox
 
-from models.main import Model
-from views.main import View
+from models.main import MainModel
+from views.main import MainView
 
 
 class SignInController:
-    def __init__(self, model: Model, view: View) -> None:
-        self.model = model
-        self.view = view
-        self.frame = self.view.frames["signin"]
+    def __init__(self, main_model: MainModel, main_view: MainView) -> None:
+        self.main_model = main_model
+        self.main_view = main_view
+        self.frame = self.main_view.frames["signin"]
         self._bind()
 
     def _bind(self) -> None:
@@ -17,13 +17,13 @@ class SignInController:
         self.frame.signup_btn.config(command=self.signup)
 
     def signup(self) -> None:
-        self.view.switch("signup")
+        self.main_view.switch("signup")
 
     def signin(self) -> None:
         username = self.frame.username_input.get()
         password = self.frame.password_input.get()
         try:
-            self.model.auth.authenticate(username=username, password=password)
+            self.main_model.auth.authenticate(username=username, password=password)
         except ValueError as exception:
             messagebox.showerror("Sign In Failed", str(exception))
             return

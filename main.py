@@ -1,13 +1,13 @@
-from models.main import Model
-from views.main import View
-from controllers.main import Controller
+from controllers.main import MainController
+from models.main import MainModel
+from views.main import MainView
 
 
 def main():
-    model = Model()
-    view = View()
-    controller = Controller(model, view)
-    controller.start()
+    main_model = MainModel()
+    main_view = MainView()
+    main_controller = MainController(main_model, main_view)
+    main_controller.start()
 
 
 if __name__ == "__main__":

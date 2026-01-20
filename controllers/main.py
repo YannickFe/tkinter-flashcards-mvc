@@ -7,28 +7,28 @@ from controllers.signin import SignInController
 from controllers.signup import SignUpController
 from controllers.study import StudyController
 from models.auth import Auth
-from models.main import Model
-from views.main import View
+from models.main import MainModel
+from views.main import MainView
 
 
-class Controller:
-    def __init__(self, model: Model, view: View) -> None:
+class MainController:
+    def __init__(self, main_model: MainModel, main_view: MainView) -> None:
         # Root wiring: build controllers, then cross-link dependencies (list/detail/forms/study).
-        self.view = view
-        self.model = model
-        self.signin_controller = SignInController(model, view)
-        self.signup_controller = SignUpController(model, view)
-        self.deck_list_controller = DeckListController(model, view)
-        self.deck_detail_controller = DeckDetailController(model, view)
-        self.study_controller = StudyController(model, view)
+        self.main_view = main_view
+        self.main_model = main_model
+        self.signin_controller = SignInController(main_model, main_view)
+        self.signup_controller = SignUpController(main_model, main_view)
+        self.deck_list_controller = DeckListController(main_model, main_view)
+        self.deck_detail_controller = DeckDetailController(main_model, main_view)
+        self.study_controller = StudyController(main_model, main_view)
         self.deck_form_controller = DeckFormController(
-            model, view, deck_list_controller=self.deck_list_controller
+            main_model, main_view, deck_list_controller=self.deck_list_controller
         )
         self.card_form_controller = CardFormController(
-            model, view, deck_detail_controller=self.deck_detail_controller
+            main_model, main_view, deck_detail_controller=self.deck_detail_controller
         )
         self.home_controller = HomeController(
-            model, view, deck_list_controller=self.deck_list_controller
+            main_model, main_view, deck_list_controller=self.deck_list_controller
         )
 
         # Cross-wire navigation and forms.
@@ -38,24 +38,24 @@ class Controller:
         self.deck_detail_controller.set_card_form_controller(self.card_form_controller)
 
         # React to auth state changes (login/logout).
-        self.model.auth.add_event_listener("auth_changed", self.auth_state_listener)
+        self.main_model.auth.add_event_listener("auth_changed", self.auth_state_listener)
 
     def auth_state_listener(self, data: Auth) -> None:
         if data.is_logged_in:
             if data.current_user:
-                self.model.decks.seed_sample(data.current_user["id"])
+                self.main_model.decks.seed_sample(data.current_user["id"])
             self.deck_list_controller.refresh()
             self.home_controller.update_view()
-            self.view.switch("home")
+            self.main_view.switch("home")
         else:
-            self.view.switch("signin")
+            self.main_view.switch("signin")
 
     def start(self) -> None:
         # Here, you can do operations required before launching the gui, for example,
         # self.model.auth.load_auth_state()
-        if self.model.auth.is_logged_in:
-            self.view.switch("home")
+        if self.main_model.auth.is_logged_in:
+            self.main_view.switch("home")
         else:
-            self.view.switch("signin")
+            self.main_view.switch("signin")
 
-        self.view.start_mainloop()
+        self.main_view.start_mainloop()

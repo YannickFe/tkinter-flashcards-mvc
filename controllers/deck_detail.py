@@ -4,16 +4,16 @@ from typing import List, Optional
 from controllers.card_form import CardFormController
 from controllers.study import StudyController
 from models.deck import CardData
-from models.main import Model
-from views.main import View
+from models.main import MainModel
+from views.main import MainView
 
 
 class DeckDetailController:
-    def __init__(self, model: Model, view: View):
+    def __init__(self, main_model: MainModel, main_view: MainView):
         """Show cards for a deck and route add/edit/study actions to other controllers."""
-        self.model = model
-        self.view = view
-        self.frame = self.view.frames["deck_detail"]
+        self.main_model = main_model
+        self.main_view = main_view
+        self.frame = self.main_view.frames["deck_detail"]
         self.study_controller: StudyController | None = None
         self.card_form_controller: CardFormController | None = None
         self.current_deck_id: int | None = None
@@ -24,7 +24,7 @@ class DeckDetailController:
     def set_study_controller(self, controller: StudyController) -> None:
         self.study_controller = controller
 
-    def set_card_form_controller(self, controller: "CardFormController") -> None:
+    def set_card_form_controller(self, controller: CardFormController) -> None:
         self.card_form_controller = controller
 
     def _bind(self) -> None:
@@ -37,7 +37,7 @@ class DeckDetailController:
 
     def _require_user(self) -> int:
         """Guard against anonymous access and return user id."""
-        user = self.model.auth.current_user
+        user = self.main_model.auth.current_user
         if not user:
             raise ValueError("You must be signed in.")
         return user["id"]
@@ -46,7 +46,7 @@ class DeckDetailController:
         """Load deck metadata and cards."""
         try:
             user_id = self._require_user()
-            deck = self.model.decks.get_deck(user_id=user_id, deck_id=deck_id)
+            deck = self.main_model.decks.get_deck(user_id=user_id, deck_id=deck_id)
             self.current_deck_id = deck.id
             self.current_deck_name = deck.name
             self.frame.set_title(deck.name)
@@ -62,7 +62,7 @@ class DeckDetailController:
             return
         try:
             user_id = self._require_user()
-            cards = self.model.decks.list_cards(user_id=user_id, deck_id=self.current_deck_id)
+            cards = self.main_model.decks.list_cards(user_id=user_id, deck_id=self.current_deck_id)
             self.current_cards = cards
             self.frame.cards_list.delete(0, END)
             for card in cards:
@@ -109,7 +109,7 @@ class DeckDetailController:
         if messagebox.askyesno("Delete Card", "Delete this card?"):
             try:
                 user_id = self._require_user()
-                self.model.decks.delete_card(user_id=user_id, card_id=card.id)
+                self.main_model.decks.delete_card(user_id=user_id, card_id=card.id)
                 self.refresh_cards()
             except ValueError as exception:
                 # Missing auth or card already removed.
@@ -119,11 +119,11 @@ class DeckDetailController:
         if not self.study_controller or self.current_deck_id is None:
             self.frame.set_message("Study controller unavailable.")
             return
-        deck = self.model.decks.get_deck(
+        deck = self.main_model.decks.get_deck(
             user_id=self._require_user(), deck_id=self.current_deck_id
         )
         self.study_controller.start(deck_id=self.current_deck_id, deck_name=deck.name)
-        self.view.switch("study")
+        self.main_view.switch("study")
 
     def back_to_decks(self) -> None:
-        self.view.switch("deck_list")
+        self.main_view.switch("deck_list")
