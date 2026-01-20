@@ -51,12 +51,11 @@ class MainView:
         self.frames[name].grid(row=0, column=0, sticky="nsew")  # type: ignore
 
     def switch(self, name: str) -> None:
-        if name in self.frames:
-            frame = self.frames[name]  # type: ignore
-            # Raise the frame to the top to make it visible
-            frame.tkraise()
-        else:
+        if not name in self.frames:
             raise ValueError(f"Frame '{name}' does not exist.")
+        frame = self.frames[name]  # type: ignore
+        # Raise the frame to the top to make it visible
+        frame.tkraise()
 
     def start_mainloop(self) -> None:
         # Start the main Tk loop
