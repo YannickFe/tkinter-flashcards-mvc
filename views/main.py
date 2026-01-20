@@ -47,12 +47,12 @@ class View:
         if name in self.frames:
             raise ValueError(f"Frame '{name}' already exists.")
         # Params are valid, create the frame and add it to the dict
-        self.frames[name] = frame_class(self.root)
-        self.frames[name].grid(row=0, column=0, sticky="nsew")
+        self.frames[name] = frame_class(self.root)  # type: ignore
+        self.frames[name].grid(row=0, column=0, sticky="nsew")  # type: ignore
 
     def switch(self, name: str) -> None:
         if name in self.frames:
-            frame = self.frames[name]
+            frame = self.frames[name]  # type: ignore
             # Raise the frame to the top to make it visible
             frame.tkraise()
         else:
