@@ -36,6 +36,7 @@ class MainController:
         self.deck_list_controller.set_form_controller(self.deck_form_controller)
         self.deck_detail_controller.set_study_controller(self.study_controller)
         self.deck_detail_controller.set_card_form_controller(self.card_form_controller)
+        self.study_controller.set_detail_controller(self.deck_detail_controller)
 
         # React to auth state changes (login/logout).
         self.main_model.auth.add_event_listener("auth_changed", self.auth_state_listener)

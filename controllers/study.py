@@ -14,10 +14,14 @@ class StudyController:
         self.main_model = main_model
         self.main_view = main_view
         self.frame = self.main_view.frames["study"]
+        self.deck_detail_controller: "DeckDetailController | None" = None
         self.current_deck_id: int | None = None
         self.current_deck_name: str = ""
         self.current_card: Optional[CardData] = None
         self._bind()
+
+    def set_detail_controller(self, controller: "DeckDetailController") -> None:
+        self.deck_detail_controller = controller
 
     def _bind(self) -> None:
         self.frame.show_answer_btn.config(command=self.show_answer)
@@ -75,4 +79,11 @@ class StudyController:
             self.frame.set_message(str(exception))
 
     def back_to_deck(self) -> None:
+        # load the current deck so scores are updated
+        if self.deck_detail_controller and self.current_deck_id is not None:
+            try:
+                self.deck_detail_controller.load_deck(self.current_deck_id)
+            except ValueError as exception:
+                self.frame.set_message(str(exception))
+                return
         self.main_view.switch("deck_detail")
