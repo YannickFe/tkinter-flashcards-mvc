@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from controllers.card_form import CardFormController
 from controllers.study import StudyController
-from controllers.utils import require_user_id
+from controllers.utils import require_user_id, truncate_and_pad
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
@@ -60,7 +60,8 @@ class DeckDetailController:
             self.current_cards = cards
             self.frame.cards_list.delete(0, END)
             for card in cards:
-                display = f"Q: {card.question[:30]}... | Score: {card.score}"
+                question_preview = truncate_and_pad(card.question, 30)
+                display = f"Q: {question_preview} | Score: {card.score}"
                 self.frame.cards_list.insert(END, display)
             self.frame.set_message("")
         except ValueError as exception:

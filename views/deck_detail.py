@@ -15,7 +15,8 @@ class DeckDetailView(Frame):
         self.title_label = Label(self, textvariable=self.title_var)
         self.title_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
-        self.cards_list = Listbox(self, exportselection=False)
+        # Monospace font keeps columns aligned for padded question/score display.
+        self.cards_list = Listbox(self, exportselection=False, font=("Courier New", 10))
         self.cards_list.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
         self.scrollbar = Scrollbar(self, orient="vertical", command=self.cards_list.yview)

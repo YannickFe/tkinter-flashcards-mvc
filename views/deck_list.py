@@ -14,7 +14,8 @@ class DeckListView(Frame):
         self.header = Label(self, text="Your Decks")
         self.header.grid(row=0, column=0, columnspan=3, padx=10, pady=10, sticky="w")
 
-        self.deck_list = Listbox(self, exportselection=False)
+        # Monospace font keeps padded name/description columns aligned.
+        self.deck_list = Listbox(self, exportselection=False, font=("Courier New", 10))
         self.deck_list.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
         self.scrollbar = Scrollbar(self, orient="vertical", command=self.deck_list.yview)

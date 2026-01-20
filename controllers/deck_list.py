@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from controllers.deck_detail import DeckDetailController
 from controllers.deck_form import DeckFormController
-from controllers.utils import require_user_id
+from controllers.utils import require_user_id, truncate_and_pad
 from models.deck import DeckData
 from models.main import MainModel
 from views.main import MainView
@@ -43,7 +43,9 @@ class DeckListController:
             decks = self.main_model.decks.list_decks(user_id=user_id)
             self._decks = decks
             for deck in decks:
-                self.frame.deck_list.insert("end", f"{deck.name} — {deck.description}")
+                name = truncate_and_pad(deck.name, 22)
+                desc = truncate_and_pad(deck.description, 28)
+                self.frame.deck_list.insert("end", f"{name} | {desc}")
             self.frame.set_message("")
         except ValueError as exception:
             # Missing auth or fetch failure; surface message to the list view.

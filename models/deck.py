@@ -111,7 +111,7 @@ class DeckService:
                 .order_by(DeckRecord.name.asc())
                 .all()
             )
-            result = [DeckData(id=d.id, name=d.name, description=d.description or "") for d in decks]
+            result = [DeckData(id=d.id, name=d.name, description=d.description or "") for d in decks]  # type: ignore
             self._log(f"Fetched {len(result)} decks for user {user_id}")
             return result
 
