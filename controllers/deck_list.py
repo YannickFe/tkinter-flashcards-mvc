@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from controllers.deck_detail import DeckDetailController
 from controllers.deck_form import DeckFormController
+from controllers.utils import require_user_id
 from models.deck import DeckData
 from models.main import MainModel
 from views.main import MainView
@@ -33,19 +34,12 @@ class DeckListController:
         self.frame.delete_btn.config(command=self.delete_deck)
         self.frame.back_btn.config(command=lambda: self.main_view.switch("home"))
 
-    def _require_user(self) -> int:
-        """Guard against anonymous access and return user id."""
-        user = self.main_model.auth.current_user
-        if not user:
-            raise ValueError("You must be signed in.")
-        return user["id"]
-
     def refresh(self) -> None:
         """Reload decks for the current user."""
         self._decks = []
         self.frame.deck_list.delete(0, "end")
         try:
-            user_id = self._require_user()
+            user_id = require_user_id(self.main_model.auth)
             decks = self.main_model.decks.list_decks(user_id=user_id)
             self._decks = decks
             for deck in decks:
@@ -103,7 +97,7 @@ class DeckListController:
             return
         if messagebox.askyesno("Delete Deck", f"Delete '{deck.name}'?"):
             try:
-                user_id = self._require_user()
+                user_id = require_user_id(self.main_model.auth)
                 self.main_model.decks.delete_deck(user_id=user_id, deck_id=deck.id)
                 self.refresh()
             except ValueError as exception:

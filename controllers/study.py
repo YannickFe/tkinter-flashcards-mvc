@@ -1,5 +1,6 @@
 from typing import Optional
 
+from controllers.utils import require_user_id
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
@@ -14,12 +15,6 @@ class StudyController:
         self.current_deck_name: str = ""
         self.current_card: Optional[CardData] = None
         self._bind()
-
-    def _require_user(self) -> int:
-        user = self.main_model.auth.current_user
-        if not user:
-            raise ValueError("You must be signed in.")
-        return user["id"]
 
     def _bind(self) -> None:
         self.frame.show_answer_btn.config(command=self.show_answer)
@@ -39,7 +34,7 @@ class StudyController:
             self.frame.set_message("No deck selected.")
             return
         try:
-            user_id = self._require_user()
+            user_id = require_user_id(self.main_model.auth)
             card = self.main_model.decks.next_card_for_study(
                 user_id=user_id, deck_id=self.current_deck_id
             )
@@ -67,7 +62,7 @@ class StudyController:
             self.frame.set_message("No deck selected.")
             return
         try:
-            user_id = self._require_user()
+            user_id = require_user_id(self.main_model.auth)
             updated = self.main_model.decks.update_score(
                 user_id=user_id, card_id=self.current_card.id, delta=delta
             )

@@ -1,3 +1,4 @@
+from controllers.utils import require_user_id
 from models.deck import DeckData
 from models.main import MainModel
 from views.main import MainView
@@ -12,13 +13,6 @@ class DeckFormController:
         self.frame = self.main_view.frames["deck_form"]
         self.current_deck_id: int | None = None
         self._bind()
-
-    def _require_user(self) -> int:
-        """Guard against anonymous access and return user id."""
-        user = self.main_model.auth.current_user
-        if not user:
-            raise ValueError("You must be signed in.")
-        return user["id"]
 
     def _bind(self) -> None:
         self.frame.save_btn.config(command=self.save)
@@ -47,7 +41,7 @@ class DeckFormController:
         name = self.frame.name_input.get().strip()
         desc = self.frame.desc_input.get().strip()
         try:
-            user_id = self._require_user()
+            user_id = require_user_id(self.main_model.auth)
             if self.current_deck_id is None:
                 self.main_model.decks.create_deck(user_id=user_id, name=name, description=desc)
             else:

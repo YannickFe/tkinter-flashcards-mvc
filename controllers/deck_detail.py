@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from controllers.card_form import CardFormController
 from controllers.study import StudyController
+from controllers.utils import require_user_id
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
@@ -35,17 +36,10 @@ class DeckDetailController:
         self.frame.study_btn.config(command=self.start_study)
         self.frame.back_btn.config(command=self.back_to_decks)
 
-    def _require_user(self) -> int:
-        """Guard against anonymous access and return user id."""
-        user = self.main_model.auth.current_user
-        if not user:
-            raise ValueError("You must be signed in.")
-        return user["id"]
-
     def load_deck(self, deck_id: int) -> None:
         """Load deck metadata and cards."""
         try:
-            user_id = self._require_user()
+            user_id = require_user_id(self.main_model.auth)
             deck = self.main_model.decks.get_deck(user_id=user_id, deck_id=deck_id)
             self.current_deck_id = deck.id
             self.current_deck_name = deck.name
@@ -61,7 +55,7 @@ class DeckDetailController:
         if self.current_deck_id is None:
             return
         try:
-            user_id = self._require_user()
+            user_id = require_user_id(self.main_model.auth)
             cards = self.main_model.decks.list_cards(user_id=user_id, deck_id=self.current_deck_id)
             self.current_cards = cards
             self.frame.cards_list.delete(0, END)
@@ -108,7 +102,7 @@ class DeckDetailController:
             return
         if messagebox.askyesno("Delete Card", "Delete this card?"):
             try:
-                user_id = self._require_user()
+                user_id = require_user_id(self.main_model.auth)
                 self.main_model.decks.delete_card(user_id=user_id, card_id=card.id)
                 self.refresh_cards()
             except ValueError as exception:
@@ -119,11 +113,13 @@ class DeckDetailController:
         if not self.study_controller or self.current_deck_id is None:
             self.frame.set_message("Study controller unavailable.")
             return
-        deck = self.main_model.decks.get_deck(
-            user_id=self._require_user(), deck_id=self.current_deck_id
-        )
-        self.study_controller.start(deck_id=self.current_deck_id, deck_name=deck.name)
-        self.main_view.switch("study")
+        try:
+            user_id = require_user_id(self.main_model.auth)
+            deck = self.main_model.decks.get_deck(user_id=user_id, deck_id=self.current_deck_id)
+            self.study_controller.start(deck_id=self.current_deck_id, deck_name=deck.name)
+            self.main_view.switch("study")
+        except ValueError as exception:
+            self.frame.set_message(str(exception))
 
     def back_to_decks(self) -> None:
         self.main_view.switch("deck_list")

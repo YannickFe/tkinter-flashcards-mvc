@@ -1,3 +1,4 @@
+from controllers.utils import require_user_id
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
@@ -14,13 +15,6 @@ class CardFormController:
         self.current_deck_name: str = ""
         self.current_card_id: int | None = None
         self._bind()
-
-    def _require_user(self) -> int:
-        """Guard against anonymous access and return user id."""
-        user = self.main_model.auth.current_user
-        if not user:
-            raise ValueError("You must be signed in.")
-        return user["id"]
 
     def _bind(self) -> None:
         self.frame.save_btn.config(command=self.save)
@@ -56,7 +50,7 @@ class CardFormController:
             self.frame.set_message("No deck selected.")
             return
         try:
-            user_id = self._require_user()
+            user_id = require_user_id(self.main_model.auth)
             if self.current_card_id is None:
                 self.main_model.decks.add_card(
                     user_id=user_id, deck_id=self.current_deck_id, question=question, answer=answer
