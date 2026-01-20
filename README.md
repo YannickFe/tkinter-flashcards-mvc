@@ -56,5 +56,5 @@ python -m unittest
 To package this project for task submission, run:
 
 ```bash
-git archive --format=zip HEAD -o tkinter-flashcards-mvc.zip
+git archive --format=zip HEAD -o tkinter-flashcards-mvc_$(git rev-parse HEAD).zip
 ```
