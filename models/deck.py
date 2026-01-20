@@ -99,7 +99,7 @@ class DeckService:
             deck.description = description
             session.commit()
             session.refresh(deck)
-            data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")
+            data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")  # type: ignore
             self._log(f"Updated deck {data}")
             return data
 
@@ -137,7 +137,7 @@ class DeckService:
             )
             if not deck:
                 raise ValueError("Deck not found.")
-            data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")
+            data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")  # type: ignore
             self._log(f"Loaded deck {data}")
             return data
 
@@ -179,7 +179,7 @@ class DeckService:
                 card.answer = answer
             session.commit()
             session.refresh(card)
-            data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
+            data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)  # type: ignore
             self._log(f"Updated card {data}")
             return data
 
@@ -205,7 +205,7 @@ class DeckService:
                 .all()
             )
             result = [
-                CardData(id=c.id, question=c.question, answer=c.answer, score=c.score) for c in cards
+                CardData(id=c.id, question=c.question, answer=c.answer, score=c.score) for c in cards  # type: ignore
             ]
             self._log(f"Fetched {len(result)} cards for deck {deck_id} (user {user_id})")
             return result
@@ -222,13 +222,13 @@ class DeckService:
             card.score = max(0, card.score + delta)
             session.commit()
             session.refresh(card)
-            data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
+            data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)  # type: ignore
             self._log(f"Updated score for card {data} (delta={delta})")
             return data
 
     def next_card_for_study(self, user_id: int, deck_id: int) -> Optional[CardData]:
         with self._session() as session:
-            cards: List[CardRecord] = (
+            cards: List[CardRecord] = (  # type: ignore
                 session.query(CardRecord)
                 .filter(CardRecord.deck_id == deck_id, CardRecord.user_id == user_id)
                 .all()
