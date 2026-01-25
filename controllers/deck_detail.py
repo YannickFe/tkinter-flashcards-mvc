@@ -41,34 +41,34 @@ class DeckDetailController:
     def load_deck(self, deck_id: int) -> None:
         """Load deck metadata and cards."""
         try:
-            user = require_user(self.main_model.auth)
+            user = require_user(auth=self.main_model.auth)
             deck = self.main_model.decks.get_deck(user_id=user.id, deck_id=deck_id)
             self.current_deck_id = deck.id
             self.current_deck_name = deck.name
-            self.frame.set_title(deck.name)
+            self.frame.set_title(name=deck.name)
             self.refresh_cards()
-            self.frame.set_message("")
+            self.frame.set_message(message="")
         except ValueError as exception:
             # Typical issues: not signed in or deck not found for this user.
-            self.frame.set_message(str(exception))
+            self.frame.set_message(message=str(exception))
 
     def refresh_cards(self) -> None:
         """Reload cards into the list."""
         if self.current_deck_id is None:
             return
         try:
-            user = require_user(self.main_model.auth)
+            user = require_user(auth=self.main_model.auth)
             cards = self.main_model.decks.list_cards(user_id=user.id, deck_id=self.current_deck_id)
             self.current_cards = cards
             self.frame.cards_list.delete(0, END)
             for card in cards:
-                question_preview = truncate_and_pad(card.question, 30)
+                question_preview = truncate_and_pad(text=card.question, width=30)
                 display = f"Q: {question_preview} | Score: {card.score}"
                 self.frame.cards_list.insert(END, display)
-            self.frame.set_message("")
+            self.frame.set_message(message="")
         except ValueError as exception:
             # Likely missing auth or deck/cards no longer exist.
-            self.frame.set_message(str(exception))
+            self.frame.set_message(message=str(exception))
 
     def _selected_card(self) -> Optional[CardData]:
         """Return the selected card (or None)."""
@@ -82,17 +82,19 @@ class DeckDetailController:
 
     def add_card(self) -> None:
         if self.current_deck_id is None or not self.card_form_controller:
-            self.frame.set_message("Card form unavailable.")
+            self.frame.set_message(message="Card form unavailable.")
             return
-        self.card_form_controller.start_create(self.current_deck_id, self.current_deck_name)
+        self.card_form_controller.start_create(
+            deck_id=self.current_deck_id, deck_name=self.current_deck_name
+        )
 
     def update_card(self) -> None:
         card = self._selected_card()
         if not card:
-            self.frame.set_message("Select a card to edit.")
+            self.frame.set_message(message="Select a card to edit.")
             return
         if self.current_deck_id is None or not self.card_form_controller:
-            self.frame.set_message("Card form unavailable.")
+            self.frame.set_message(message="Card form unavailable.")
             return
         self.card_form_controller.start_edit(
             deck_id=self.current_deck_id, deck_name=self.current_deck_name, card=card
@@ -101,28 +103,28 @@ class DeckDetailController:
     def delete_card(self) -> None:
         card = self._selected_card()
         if not card:
-            self.frame.set_message("Select a card to delete.")
+            self.frame.set_message(message="Select a card to delete.")
             return
         if messagebox.askyesno("Delete Card", "Delete this card?"):
             try:
-                user = require_user(self.main_model.auth)
+                user = require_user(auth=self.main_model.auth)
                 self.main_model.decks.delete_card(user_id=user.id, card_id=card.id)
                 self.refresh_cards()
             except ValueError as exception:
                 # Missing auth or card already removed.
-                self.frame.set_message(str(exception))
+                self.frame.set_message(message=str(exception))
 
     def start_study(self) -> None:
         if not self.study_controller or self.current_deck_id is None:
-            self.frame.set_message("Study controller unavailable.")
+            self.frame.set_message(message="Study controller unavailable.")
             return
         try:
-            user = require_user(self.main_model.auth)
+            user = require_user(auth=self.main_model.auth)
             deck = self.main_model.decks.get_deck(user_id=user.id, deck_id=self.current_deck_id)
             self.study_controller.start(deck_id=self.current_deck_id, deck_name=deck.name)
-            self.main_view.switch("study")
+            self.main_view.switch(name="study")
         except ValueError as exception:
-            self.frame.set_message(str(exception))
+            self.frame.set_message(message=str(exception))
 
     def back_to_decks(self) -> None:
-        self.main_view.switch("deck_list")
+        self.main_view.switch(name="deck_list")

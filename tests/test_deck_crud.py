@@ -13,37 +13,49 @@ class DeckCrudTests(DBTestCase):
 
     def test_create_deck_requires_name(self) -> None:
         with self.assertRaises(ValueError):
-            self.service.create_deck(self.user_id, "")
+            self.service.create_deck(user_id=self.user_id, name="")
 
     def test_delete_deck_removes_cards(self) -> None:
-        deck = self.service.create_deck(self.user_id, "Has Cards")
-        card = self.service.add_card(self.user_id, deck.id, "Q", "A")
+        deck = self.service.create_deck(user_id=self.user_id, name="Has Cards")
+        card = self.service.add_card(
+            user_id=self.user_id, deck_id=deck.id, question="Q", answer="A"
+        )
         self.assertIsInstance(card, CardData)
 
-        self.service.delete_deck(self.user_id, deck.id)
-        cards = self.service.list_cards(self.user_id, deck.id)
+        self.service.delete_deck(user_id=self.user_id, deck_id=deck.id)
+        cards = self.service.list_cards(user_id=self.user_id, deck_id=deck.id)
         self.assertEqual(cards, [])
 
     def test_update_card_preserves_missing_fields(self) -> None:
-        deck = self.service.create_deck(self.user_id, "Partial Update")
-        card = self.service.add_card(self.user_id, deck.id, "Original Q", "Original A")
+        deck = self.service.create_deck(user_id=self.user_id, name="Partial Update")
+        card = self.service.add_card(
+            user_id=self.user_id, deck_id=deck.id, question="Original Q", answer="Original A"
+        )
 
-        updated = self.service.update_card(self.user_id, card.id, question="New Q", answer=None)
+        updated = self.service.update_card(
+            user_id=self.user_id, card_id=card.id, question="New Q", answer=None
+        )
         self.assertEqual(updated.question, "New Q")
         self.assertEqual(updated.answer, "Original A")
 
     def test_update_deck_changes_name_and_description(self) -> None:
-        deck = self.service.create_deck(self.user_id, "Old", "Desc")
-        updated = self.service.update_deck(self.user_id, deck.id, "New", "New Desc")
+        deck = self.service.create_deck(user_id=self.user_id, name="Old", description="Desc")
+        updated = self.service.update_deck(
+            user_id=self.user_id, deck_id=deck.id, name="New", description="New Desc"
+        )
         self.assertEqual(updated.name, "New")
         self.assertEqual(updated.description, "New Desc")
 
     def test_add_card_requires_question_and_answer(self) -> None:
-        deck = self.service.create_deck(self.user_id, "Validation")
+        deck = self.service.create_deck(user_id=self.user_id, name="Validation")
         with self.assertRaises(ValueError):
-            self.service.add_card(self.user_id, deck.id, question="", answer="A")
+            self.service.add_card(
+                user_id=self.user_id, deck_id=deck.id, question="", answer="A"
+            )
         with self.assertRaises(ValueError):
-            self.service.add_card(self.user_id, deck.id, question="Q", answer="")
+            self.service.add_card(
+                user_id=self.user_id, deck_id=deck.id, question="Q", answer=""
+            )
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ class SignUpController:
         self.frame.signin_btn.config(command=self.signin)
 
     def signin(self) -> None:
-        self.main_view.switch("signin")
+        self.main_view.switch(name="signin")
 
     def signup(self) -> None:
         data = {

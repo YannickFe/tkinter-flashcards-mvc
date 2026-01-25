@@ -57,7 +57,7 @@ class UserService(ObservableModel):
         if not username or not password or not full_name:
             raise ValueError("Full name, username, and password are required.")
 
-        password_hash = self._hash_password(password)
+        password_hash = self._hash_password(password=password)
         with self._get_session() as session:
             user = UserRecord(
                 username=username,
@@ -73,8 +73,8 @@ class UserService(ObservableModel):
             session.refresh(user)
 
         user_data = UserData(id=user.id, username=user.username, full_name=user.full_name)
-        self._log(f"Registered user {user_data}")
-        self.login(user_data)
+        self._log(message=f"Registered user {user_data}")
+        self.login(user=user_data)
         return user_data
 
     def authenticate(self, username: str, password: str) -> UserData:
@@ -89,21 +89,21 @@ class UserService(ObservableModel):
         if not user:
             raise ValueError("Invalid username or password.")
 
-        if not self._verify_password(password, user.password_hash):
+        if not self._verify_password(password=password, hashed=user.password_hash):
             raise ValueError("Invalid username or password.")
 
         user_data = UserData(id=user.id, username=user.username, full_name=user.full_name)
-        self.login(user_data)
+        self.login(user=user_data)
         return user_data
 
     def login(self, user: UserData) -> None:
         self.is_logged_in = True
         self.current_user = user
-        self.trigger_event("auth_changed")
-        self._log(f"Logged in user {user}")
+        self.trigger_event(event="auth_changed")
+        self._log(message=f"Logged in user {user}")
 
     def logout(self) -> None:
         self.is_logged_in = False
         self.current_user = None
-        self.trigger_event("auth_changed")
-        self._log("Logged out")
+        self.trigger_event(event="auth_changed")
+        self._log(message="Logged out")

@@ -20,7 +20,7 @@ class HomeController:
 
     def switch_to_decks(self) -> None:
         self.deck_list_controller.refresh()
-        self.main_view.switch("deck_list")
+        self.main_view.switch(name="deck_list")
 
     def update_view(self) -> None:
         current_user = self.main_model.auth.current_user
@@ -28,4 +28,4 @@ class HomeController:
             name = current_user.full_name or current_user.username
             self.frame.greeting.config(text=f"Welcome, {name}!")
         else:
-            self.frame.greeting.config(text=f"")
+            self.frame.greeting.config(text="")

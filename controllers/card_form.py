@@ -25,32 +25,32 @@ class CardFormController:
         self.current_deck_id = deck_id
         self.current_deck_name = deck_name
         self.current_card_id = None
-        self.frame.set_title(f"Add Card to '{deck_name}'")
-        self.frame.set_message("")
+        self.frame.set_title(title=f"Add Card to '{deck_name}'")
+        self.frame.set_message(message="")
         self.frame.clear_inputs()
-        self.main_view.switch("card_form")
+        self.main_view.switch(name="card_form")
 
     def start_edit(self, deck_id: int, deck_name: str, card: CardData) -> None:
         """Open the form in edit mode for an existing card."""
         self.current_deck_id = deck_id
         self.current_deck_name = deck_name
         self.current_card_id = card.id
-        self.frame.set_title(f"Edit Card in '{deck_name}'")
-        self.frame.set_message("")
+        self.frame.set_title(title=f"Edit Card in '{deck_name}'")
+        self.frame.set_message(message="")
         self.frame.clear_inputs()
         self.frame.question_input.insert("1.0", card.question)
         self.frame.answer_input.insert("1.0", card.answer)
-        self.main_view.switch("card_form")
+        self.main_view.switch(name="card_form")
 
     def save(self) -> None:
         """Persist changes and return to deck detail."""
         question = self.frame.question_input.get("1.0", "end").strip()
         answer = self.frame.answer_input.get("1.0", "end").strip()
         if self.current_deck_id is None:
-            self.frame.set_message("No deck selected.")
+            self.frame.set_message(message="No deck selected.")
             return
         try:
-            user = require_user(self.main_model.auth)
+            user = require_user(auth=self.main_model.auth)
             if self.current_card_id is None:
                 self.main_model.decks.add_card(
                     user_id=user.id, deck_id=self.current_deck_id, question=question, answer=answer
@@ -59,11 +59,11 @@ class CardFormController:
                 self.main_model.decks.update_card(
                     user_id=user.id, card_id=self.current_card_id, question=question, answer=answer
                 )
-            self.deck_detail_controller.load_deck(self.current_deck_id)
-            self.main_view.switch("deck_detail")
+            self.deck_detail_controller.load_deck(deck_id=self.current_deck_id)
+            self.main_view.switch(name="deck_detail")
         except ValueError as exception:
             # Validation errors (empty fields) or missing auth/deck context.
-            self.frame.set_message(str(exception))
+            self.frame.set_message(message=str(exception))
 
     def cancel(self) -> None:
-        self.main_view.switch("deck_detail")
+        self.main_view.switch(name="deck_detail")

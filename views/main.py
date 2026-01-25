@@ -32,14 +32,14 @@ class MainView:
 
         # Instantiate all frames up front and stack them
         # We can switch to the new active one by raising it to the top
-        self._add_frame(SignUpView, "signup")
-        self._add_frame(SignInView, "signin")
-        self._add_frame(HomeView, "home")
-        self._add_frame(DeckListView, "deck_list")
-        self._add_frame(DeckDetailView, "deck_detail")
-        self._add_frame(StudyView, "study")
-        self._add_frame(DeckFormView, "deck_form")
-        self._add_frame(CardFormView, "card_form")
+        self._add_frame(frame_class=SignUpView, name="signup")
+        self._add_frame(frame_class=SignInView, name="signin")
+        self._add_frame(frame_class=HomeView, name="home")
+        self._add_frame(frame_class=DeckListView, name="deck_list")
+        self._add_frame(frame_class=DeckDetailView, name="deck_detail")
+        self._add_frame(frame_class=StudyView, name="study")
+        self._add_frame(frame_class=DeckFormView, name="deck_form")
+        self._add_frame(frame_class=CardFormView, name="card_form")
 
     def _add_frame(self, frame_class: type, name: str) -> None:
         if not issubclass(frame_class, Frame):

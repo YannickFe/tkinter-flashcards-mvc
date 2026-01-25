@@ -13,28 +13,36 @@ class DeckServiceTests(DBTestCase):
         self.user_id = self.create_user(username="test", full_name="Test User")
 
     def test_score_updates_and_floors(self) -> None:
-        deck = self.service.create_deck(self.user_id, "Study")
-        card = self.service.add_card(self.user_id, deck.id, "Q1", "A1")
+        deck = self.service.create_deck(user_id=self.user_id, name="Study")
+        card = self.service.add_card(
+            user_id=self.user_id, deck_id=deck.id, question="Q1", answer="A1"
+        )
 
-        increased = self.service.update_score(self.user_id, card.id, 1)
+        increased = self.service.update_score(user_id=self.user_id, card_id=card.id, delta=1)
         self.assertEqual(increased.score, 1)
 
-        decreased = self.service.update_score(self.user_id, card.id, -5)
+        decreased = self.service.update_score(user_id=self.user_id, card_id=card.id, delta=-5)
         self.assertEqual(decreased.score, 0)
 
     def test_weighted_selection_prefers_low_scores(self) -> None:
-        deck = self.service.create_deck(self.user_id, "Weights")
-        low = self.service.add_card(self.user_id, deck.id, "Low", "A")
-        mid = self.service.add_card(self.user_id, deck.id, "Mid", "A")
-        high = self.service.add_card(self.user_id, deck.id, "High", "A")
+        deck = self.service.create_deck(user_id=self.user_id, name="Weights")
+        low = self.service.add_card(
+            user_id=self.user_id, deck_id=deck.id, question="Low", answer="A"
+        )
+        mid = self.service.add_card(
+            user_id=self.user_id, deck_id=deck.id, question="Mid", answer="A"
+        )
+        high = self.service.add_card(
+            user_id=self.user_id, deck_id=deck.id, question="High", answer="A"
+        )
 
         # Adjust scores to drive weighting differences.
-        self.service.update_score(self.user_id, mid.id, 3)
-        self.service.update_score(self.user_id, high.id, 6)
+        self.service.update_score(user_id=self.user_id, card_id=mid.id, delta=3)
+        self.service.update_score(user_id=self.user_id, card_id=high.id, delta=6)
 
         counts = {low.id: 0, mid.id: 0, high.id: 0}
         for _ in range(200):
-            card = self.service.next_card_for_study(self.user_id, deck.id)
+            card = self.service.next_card_for_study(user_id=self.user_id, deck_id=deck.id)
             if card:
                 counts[card.id] += 1
 
@@ -42,8 +50,10 @@ class DeckServiceTests(DBTestCase):
         self.assertGreater(counts[mid.id], counts[high.id])
 
     def test_next_card_none_when_empty(self) -> None:
-        deck = self.service.create_deck(self.user_id, "Empty")
-        self.assertIsNone(self.service.next_card_for_study(self.user_id, deck.id))
+        deck = self.service.create_deck(user_id=self.user_id, name="Empty")
+        self.assertIsNone(
+            self.service.next_card_for_study(user_id=self.user_id, deck_id=deck.id)
+        )
 
 
 if __name__ == "__main__":

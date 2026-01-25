@@ -34,24 +34,24 @@ class DeckListController:
         self.frame.edit_btn.config(command=self.edit_deck)
         self.frame.open_btn.config(command=self.open_deck)
         self.frame.delete_btn.config(command=self.delete_deck)
-        self.frame.back_btn.config(command=lambda: self.main_view.switch("home"))
+        self.frame.back_btn.config(command=lambda: self.main_view.switch(name="home"))
 
     def refresh(self) -> None:
         """Reload decks for the current user."""
         self._decks = []
         self.frame.deck_list.delete(0, "end")
         try:
-            user = require_user(self.main_model.auth)
+            user = require_user(auth=self.main_model.auth)
             decks = self.main_model.decks.list_decks(user_id=user.id)
             self._decks = decks
             for deck in decks:
-                name = truncate_and_pad(deck.name, 22)
-                desc = truncate_and_pad(deck.description, 28)
+                name = truncate_and_pad(text=deck.name, width=22)
+                desc = truncate_and_pad(text=deck.description, width=28)
                 self.frame.deck_list.insert("end", f"{name} | {desc}")
-            self.frame.set_message("")
+            self.frame.set_message(message="")
         except ValueError as exception:
             # Missing auth or fetch failure; surface message to the list view.
-            self.frame.set_message(str(exception))
+            self.frame.set_message(message=str(exception))
 
     def _selected_deck(self) -> Optional[DeckData]:
         """Return the currently highlighted deck, or None."""
@@ -66,7 +66,7 @@ class DeckListController:
     def new_deck(self) -> None:
         """Open deck form in create mode."""
         if not self.form_controller:
-            self.frame.set_message("Deck form unavailable.")
+            self.frame.set_message(message="Deck form unavailable.")
             return
         self.form_controller.start_create()
 
@@ -74,36 +74,36 @@ class DeckListController:
         """Open deck form in edit mode for the selected deck."""
         deck = self._selected_deck()
         if not deck:
-            self.frame.set_message("Select a deck to edit.")
+            self.frame.set_message(message="Select a deck to edit.")
             return
         if not self.form_controller:
-            self.frame.set_message("Deck form unavailable.")
+            self.frame.set_message(message="Deck form unavailable.")
             return
-        self.form_controller.start_edit(deck)
+        self.form_controller.start_edit(deck=deck)
 
     def open_deck(self) -> None:
         """Load selected deck into detail view."""
         deck = self._selected_deck()
         if not deck:
-            self.frame.set_message("Select a deck to open.")
+            self.frame.set_message(message="Select a deck to open.")
             return
         if not self.detail_controller:
-            self.frame.set_message("Deck detail controller unavailable.")
+            self.frame.set_message(message="Deck detail controller unavailable.")
             return
-        self.detail_controller.load_deck(deck.id)
-        self.main_view.switch("deck_detail")
+        self.detail_controller.load_deck(deck_id=deck.id)
+        self.main_view.switch(name="deck_detail")
 
     def delete_deck(self) -> None:
         """Remove the selected deck after confirmation."""
         deck = self._selected_deck()
         if not deck:
-            self.frame.set_message("Select a deck to delete.")
+            self.frame.set_message(message="Select a deck to delete.")
             return
         if messagebox.askyesno("Delete Deck", f"Delete '{deck.name}'?"):
             try:
-                user = require_user(self.main_model.auth)
+                user = require_user(auth=self.main_model.auth)
                 self.main_model.decks.delete_deck(user_id=user.id, deck_id=deck.id)
                 self.refresh()
             except ValueError as exception:
                 # Deleting without auth or against a missing deck.
-                self.frame.set_message(str(exception))
+                self.frame.set_message(message=str(exception))

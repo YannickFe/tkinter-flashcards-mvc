@@ -17,7 +17,7 @@ class SignInController:
         self.frame.signup_btn.config(command=self.signup)
 
     def signup(self) -> None:
-        self.main_view.switch("signup")
+        self.main_view.switch(name="signup")
 
     def signin(self) -> None:
         username = self.frame.username_input.get()

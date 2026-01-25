@@ -81,7 +81,7 @@ class DeckService:
             session.commit()
             session.refresh(deck)
             data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")
-            self._log(f"Created deck {data}")
+            self._log(message=f"Created deck {data}")
             return data
 
     def update_deck(self, user_id: int, deck_id: int, name: str, description: str = "") -> DeckData:
@@ -100,7 +100,7 @@ class DeckService:
             session.commit()
             session.refresh(deck)
             data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")  # type: ignore
-            self._log(f"Updated deck {data}")
+            self._log(message=f"Updated deck {data}")
             return data
 
     def list_decks(self, user_id: int) -> List[DeckData]:
@@ -112,7 +112,7 @@ class DeckService:
                 .all()
             )
             result = [DeckData(id=d.id, name=d.name, description=d.description or "") for d in decks]  # type: ignore
-            self._log(f"Fetched {len(result)} decks for user {user_id}")
+            self._log(message=f"Fetched {len(result)} decks for user {user_id}")
             return result
 
     def delete_deck(self, user_id: int, deck_id: int) -> None:
@@ -126,7 +126,7 @@ class DeckService:
                 raise ValueError("Deck not found.")  # No deck for this user.
             session.delete(deck)
             session.commit()
-            self._log(f"Deleted deck id={deck_id} for user {user_id}")
+            self._log(message=f"Deleted deck id={deck_id} for user {user_id}")
 
     def get_deck(self, user_id: int, deck_id: int) -> DeckData:
         with self._session() as session:
@@ -138,7 +138,7 @@ class DeckService:
             if not deck:
                 raise ValueError("Deck not found.")
             data = DeckData(id=deck.id, name=deck.name, description=deck.description or "")  # type: ignore
-            self._log(f"Loaded deck {data}")
+            self._log(message=f"Loaded deck {data}")
             return data
 
     def add_card(self, user_id: int, deck_id: int, question: str, answer: str) -> CardData:
@@ -159,7 +159,7 @@ class DeckService:
             session.commit()
             session.refresh(card)
             data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)
-            self._log(f"Added card {data} to deck {deck_id}")
+            self._log(message=f"Added card {data} to deck {deck_id}")
             return data
 
     def update_card(
@@ -180,7 +180,7 @@ class DeckService:
             session.commit()
             session.refresh(card)
             data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)  # type: ignore
-            self._log(f"Updated card {data}")
+            self._log(message=f"Updated card {data}")
             return data
 
     def delete_card(self, user_id: int, card_id: int) -> None:
@@ -194,7 +194,7 @@ class DeckService:
                 raise ValueError("Card not found.")
             session.delete(card)
             session.commit()
-            self._log(f"Deleted card id={card_id} for user {user_id}")
+            self._log(message=f"Deleted card id={card_id} for user {user_id}")
 
     def list_cards(self, user_id: int, deck_id: int) -> List[CardData]:
         with self._session() as session:
@@ -207,7 +207,7 @@ class DeckService:
             result = [
                 CardData(id=c.id, question=c.question, answer=c.answer, score=c.score) for c in cards  # type: ignore
             ]
-            self._log(f"Fetched {len(result)} cards for deck {deck_id} (user {user_id})")
+            self._log(message=f"Fetched {len(result)} cards for deck {deck_id} (user {user_id})")
             return result
 
     def update_score(self, user_id: int, card_id: int, delta: int) -> CardData:
@@ -223,7 +223,7 @@ class DeckService:
             session.commit()
             session.refresh(card)
             data = CardData(id=card.id, question=card.question, answer=card.answer, score=card.score)  # type: ignore
-            self._log(f"Updated score for card {data} (delta={delta})")
+            self._log(message=f"Updated score for card {data} (delta={delta})")
             return data
 
     def next_card_for_study(self, user_id: int, deck_id: int) -> Optional[CardData]:
@@ -234,7 +234,7 @@ class DeckService:
                 .all()
             )
             if not cards:
-                self._log(f"No cards available for study in deck {deck_id}")
+                self._log(message=f"No cards available for study in deck {deck_id}")
                 return None
 
             max_score = max(card.score for card in cards)
@@ -247,7 +247,7 @@ class DeckService:
             data = CardData(
                 id=choice.id, question=choice.question, answer=choice.answer, score=choice.score
             )
-            self._log(f"Selected next study card {data} from deck {deck_id}")
+            self._log(message=f"Selected next study card {data} from deck {deck_id}")
             return data
 
     def seed_sample(self, user_id: int) -> None:
@@ -259,7 +259,7 @@ class DeckService:
                 .first()
             )
             if existing:
-                self._log("Sample deck already exists; skipping seed")
+                self._log(message="Sample deck already exists; skipping seed")
                 return
 
             deck = DeckRecord(name="Sample Deck", description="Getting started", user_id=user_id)
@@ -285,4 +285,4 @@ class DeckService:
             ]
             session.add_all(cards)
             session.commit()
-            self._log(f"Seeded sample deck with {len(cards)} cards for user {user_id}")
+            self._log(message=f"Seeded sample deck with {len(cards)} cards for user {user_id}")
