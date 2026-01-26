@@ -48,9 +48,8 @@ class MainController:
         )
 
     def auth_state_listener(self, data: UserService) -> None:
-        if data.is_logged_in:
-            if data.current_user:
-                self.main_model.decks.seed_sample(user_id=data.current_user.id)
+        if data.current_user:
+            self.main_model.decks.seed_sample(user_id=data.current_user.id)
             self.deck_list_controller.refresh()
             self.home_controller.update_view()
             self.main_view.switch(name="home")
@@ -60,7 +59,7 @@ class MainController:
     def start(self) -> None:
         # Here, you can do operations required before launching the gui, for example,
         # self.model.auth.load_auth_state()
-        if self.main_model.users.is_logged_in:
+        if self.main_model.users.current_user:
             self.main_view.switch(name="home")
         else:
             self.main_view.switch(name="signin")

@@ -38,7 +38,6 @@ class UserData:
 class UserService(ObservableModel):
     def __init__(self):
         super().__init__()
-        self.is_logged_in = False
         self.current_user: UserData | None = None
 
     def _log(self, message: str) -> None:
@@ -100,13 +99,11 @@ class UserService(ObservableModel):
         return user_data
 
     def login(self, user: UserData) -> None:
-        self.is_logged_in = True
         self.current_user = user
         self.trigger_event(event="auth_changed")
         self._log(message=f"Logged in user {user}")
 
     def logout(self) -> None:
-        self.is_logged_in = False
         self.current_user = None
         self.trigger_event(event="auth_changed")
         self._log(message="Logged out")
