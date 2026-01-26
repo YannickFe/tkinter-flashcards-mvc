@@ -51,7 +51,7 @@ class MainController:
         if data.current_user:
             self.main_model.decks.seed_sample(user_id=data.current_user.id)
             self.deck_list_controller.refresh()
-            self.home_controller.update_view()
+            self.home_controller.refresh()
             self.main_view.switch(name="home")
         else:
             self.main_view.switch(name="signin")

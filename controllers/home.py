@@ -26,7 +26,7 @@ class HomeController:
         self.deck_list_controller.refresh()
         self.main_view.switch(name="deck_list")
 
-    def update_view(self) -> None:
+    def refresh(self) -> None:
         current_user = self.main_model.users.current_user
         if current_user:
             name = current_user.full_name or current_user.username
