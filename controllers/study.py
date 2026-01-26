@@ -44,7 +44,7 @@ class StudyController:
             self.frame.set_message(message="No deck selected.")
             return
         try:
-            user = require_user(auth=self.main_model.auth)
+            user = require_user(auth=self.main_model.users)
             card = self.main_model.decks.next_card_for_study(
                 user_id=user.id, deck_id=self.current_deck_id
             )
@@ -72,7 +72,7 @@ class StudyController:
             self.frame.set_message(message="No deck selected.")
             return
         try:
-            user = require_user(auth=self.main_model.auth)
+            user = require_user(auth=self.main_model.users)
             updated = self.main_model.decks.update_score(
                 user_id=user.id, card_id=self.current_card.id, delta=delta
             )

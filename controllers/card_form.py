@@ -53,7 +53,7 @@ class CardFormController:
             self.frame.set_message(message="No deck selected.")
             return
         try:
-            user = require_user(auth=self.main_model.auth)
+            user = require_user(auth=self.main_model.users)
             if self.current_card_id is None:
                 self.main_model.decks.add_card(
                     user_id=user.id, deck_id=self.current_deck_id, question=question, answer=answer

@@ -45,7 +45,7 @@ class DeckFormController:
         name = self.frame.get_name().strip()
         desc = self.frame.get_description().strip()
         try:
-            user = require_user(auth=self.main_model.auth)
+            user = require_user(auth=self.main_model.users)
             if self.current_deck_id is None:
                 self.main_model.decks.create_deck(user_id=user.id, name=name, description=desc)
             else:

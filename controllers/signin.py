@@ -27,7 +27,7 @@ class SignInController:
         username = self.frame.get_username()
         password = self.frame.get_password()
         try:
-            self.main_model.auth.authenticate(username=username, password=password)
+            self.main_model.users.authenticate(username=username, password=password)
         except ValueError as exception:
             messagebox.showerror("Sign In Failed", str(exception))
             return

@@ -44,7 +44,7 @@ class DeckListController:
         self._decks = []
         self.frame.clear_decks()
         try:
-            user = require_user(auth=self.main_model.auth)
+            user = require_user(auth=self.main_model.users)
             decks = self.main_model.decks.list_decks(user_id=user.id)
             self._decks = decks
             for deck in decks:
@@ -103,7 +103,7 @@ class DeckListController:
             return
         if messagebox.askyesno("Delete Deck", f"Delete '{deck.name}'?"):
             try:
-                user = require_user(auth=self.main_model.auth)
+                user = require_user(auth=self.main_model.users)
                 self.main_model.decks.delete_deck(user_id=user.id, deck_id=deck.id)
                 self.refresh()
             except ValueError as exception:

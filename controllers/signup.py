@@ -35,7 +35,7 @@ class SignUpController:
             return
 
         try:
-            self.main_model.auth.register_user(
+            self.main_model.users.register_user(
                 username=data["username"],
                 full_name=data["fullname"],
                 password=data["password"],

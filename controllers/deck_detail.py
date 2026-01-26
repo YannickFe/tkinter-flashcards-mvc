@@ -44,7 +44,7 @@ class DeckDetailController:
     def load_deck(self, deck_id: int) -> None:
         """Load deck metadata and cards."""
         try:
-            user = require_user(auth=self.main_model.auth)
+            user = require_user(auth=self.main_model.users)
             deck = self.main_model.decks.get_deck(user_id=user.id, deck_id=deck_id)
             self.current_deck_id = deck.id
             self.current_deck_name = deck.name
@@ -60,7 +60,7 @@ class DeckDetailController:
         if self.current_deck_id is None:
             return
         try:
-            user = require_user(auth=self.main_model.auth)
+            user = require_user(auth=self.main_model.users)
             cards = self.main_model.decks.list_cards(user_id=user.id, deck_id=self.current_deck_id)
             self.current_cards = cards
             self.frame.clear_cards()
@@ -109,7 +109,7 @@ class DeckDetailController:
             return
         if messagebox.askyesno("Delete Card", "Delete this card?"):
             try:
-                user = require_user(auth=self.main_model.auth)
+                user = require_user(auth=self.main_model.users)
                 self.main_model.decks.delete_card(user_id=user.id, card_id=card.id)
                 self.refresh_cards()
             except ValueError as exception:
@@ -121,7 +121,7 @@ class DeckDetailController:
             self.frame.set_message(message="Study controller unavailable.")
             return
         try:
-            user = require_user(auth=self.main_model.auth)
+            user = require_user(auth=self.main_model.users)
             deck = self.main_model.decks.get_deck(user_id=user.id, deck_id=self.current_deck_id)
             self.study_controller.start(deck_id=self.current_deck_id, deck_name=deck.name)
             self.main_view.switch(name="study")

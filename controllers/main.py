@@ -43,7 +43,7 @@ class MainController:
         self.study_controller.set_detail_controller(controller=self.deck_detail_controller)
 
         # React to auth state changes (login/logout).
-        self.main_model.auth.add_event_listener(
+        self.main_model.users.add_event_listener(
             event="auth_changed", fn=self.auth_state_listener
         )
 
@@ -60,7 +60,7 @@ class MainController:
     def start(self) -> None:
         # Here, you can do operations required before launching the gui, for example,
         # self.model.auth.load_auth_state()
-        if self.main_model.auth.is_logged_in:
+        if self.main_model.users.is_logged_in:
             self.main_view.switch(name="home")
         else:
             self.main_view.switch(name="signin")

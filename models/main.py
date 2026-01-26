@@ -8,5 +8,5 @@ __author__ = 'fenzl, ahsan'
 
 class MainModel:
     def __init__(self):
-        self.auth = UserService()
+        self.users = UserService()
         self.decks = DeckService()
