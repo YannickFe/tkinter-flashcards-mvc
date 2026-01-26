@@ -7,6 +7,7 @@ from views.main import MainView
 
 __author__ = 'fenzl, ahsan'
 
+
 class SignUpController:
     def __init__(self, main_model: MainModel, main_view: MainView):
         self.main_model = main_model
@@ -45,8 +46,8 @@ class SignUpController:
 
         self.clear_form()
         messagebox.showinfo("Success", "Account created and signed in.")
-        
-    
+
+
     def clear_form(self) -> None:
         fullname = self.frame.fullname_input.get()
         username = self.frame.username_input.get()

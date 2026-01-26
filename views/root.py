@@ -6,6 +6,7 @@ from views.theme import configure_theme
 
 __author__ = 'fenzl, ahsan'
 
+
 class Root(Tk):
     """
     Root class for initializing the main application window.
@@ -14,6 +15,7 @@ class Root(Tk):
      It initializes the main application window with specific dimensions,
      a title, and layout configuration.
     """
+
     def __init__(self):
         super().__init__()
 

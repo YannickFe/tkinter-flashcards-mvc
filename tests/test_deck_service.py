@@ -7,8 +7,10 @@ from tests.base import DBTestCase
 
 __author__ = 'fenzl'
 
+
 class DeckServiceTests(DBTestCase):
     """Exercise deck scoring/selection logic against an in-memory DB."""
+
     def setUp(self) -> None:
         super().setUp()
         self.service = DeckService(session_factory=self.session_factory)

@@ -14,6 +14,7 @@ from views.main import MainView
 
 __author__ = 'fenzl, ahsan'
 
+
 class MainController:
     def __init__(self, main_model: MainModel, main_view: MainView) -> None:
         # Root wiring: build controllers, then cross-link dependencies (list/detail/forms/study).

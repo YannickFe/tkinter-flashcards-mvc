@@ -14,6 +14,7 @@ from models.storage import SessionLocal, init_db
 
 __author__ = 'fenzl'
 
+
 class UserRecord(Base):
     """ORM table for users (persisted in SQLite)."""
     __tablename__ = "users"

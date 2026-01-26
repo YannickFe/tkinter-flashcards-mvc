@@ -4,6 +4,7 @@ from tkinter import Frame, Label, Text, Button, StringVar
 
 __author__ = 'fenzl'
 
+
 class CardFormView(Frame):
     """Simple card editor with question/answer fields, save/cancel, and inline message."""
 

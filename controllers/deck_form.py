@@ -7,6 +7,7 @@ from views.main import MainView
 
 __author__ = 'fenzl'
 
+
 class DeckFormController:
     def __init__(self, main_model: MainModel, main_view: MainView, deck_list_controller):
         """Handle create/edit of decks via the deck form view."""

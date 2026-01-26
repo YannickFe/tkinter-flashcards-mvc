@@ -8,6 +8,7 @@ from views.main import MainView
 
 __author__ = 'fenzl, ahsan'
 
+
 def main():
     main_model = MainModel()
     main_view = MainView()

@@ -15,6 +15,7 @@ from views.study import StudyView
 
 __author__ = 'fenzl, ahsan'
 
+
 class Frames(TypedDict):
     # TypedDict keeps frame names & types explicit for type checkers; at runtime it's a dict.
     signup: SignUpView
@@ -54,7 +55,7 @@ class MainView:
         self.frames[name].grid(row=0, column=0, sticky="nsew")  # type: ignore
 
     def switch(self, name: str) -> None:
-        if not name in self.frames:
+        if name not in self.frames:
             raise ValueError(f"Frame '{name}' does not exist.")
         frame = self.frames[name]  # type: ignore
         # Raise the frame to the top to make it visible

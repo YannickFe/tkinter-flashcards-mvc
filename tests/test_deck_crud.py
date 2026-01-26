@@ -7,8 +7,10 @@ from tests.base import DBTestCase
 
 __author__ = 'fenzl'
 
+
 class DeckCrudTests(DBTestCase):
     """Validate deck and card CRUD behavior and input validation."""
+
     def setUp(self) -> None:
         super().setUp()
         self.service = DeckService(session_factory=self.session_factory)

@@ -5,6 +5,7 @@ from models.user import UserService
 
 __author__ = 'fenzl, ahsan'
 
+
 class MainModel:
     def __init__(self):
         self.auth = UserService()

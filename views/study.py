@@ -4,6 +4,7 @@ from tkinter import Button, Frame, Label, StringVar
 
 __author__ = 'fenzl'
 
+
 class StudyView(Frame):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

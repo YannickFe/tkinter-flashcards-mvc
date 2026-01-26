@@ -4,6 +4,7 @@ from tkinter import Button, Frame, Label, Listbox, Scrollbar, StringVar
 
 __author__ = 'fenzl'
 
+
 class DeckDetailView(Frame):
     """Deck detail view with card list and action controls."""
 

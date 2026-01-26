@@ -4,6 +4,7 @@ from models.user import UserData, UserService
 
 __author__ = 'fenzl'
 
+
 def require_user(auth: UserService) -> UserData:
     """Return the current user or raise if nobody is signed in."""
     user = auth.current_user

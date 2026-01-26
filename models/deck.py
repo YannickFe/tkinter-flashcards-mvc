@@ -13,6 +13,7 @@ from models.storage import Base, SessionLocal
 
 __author__ = 'fenzl'
 
+
 class DeckRecord(Base):
     """ORM table for decks (persisted in SQLite)."""
     __tablename__ = "decks"
@@ -166,7 +167,7 @@ class DeckService:
             return data
 
     def update_card(
-        self, user_id: int, card_id: int, question: Optional[str] = None, answer: Optional[str] = None
+            self, user_id: int, card_id: int, question: Optional[str] = None, answer: Optional[str] = None
     ) -> CardData:
         with self._session() as session:
             card = (

@@ -4,6 +4,7 @@ from tkinter import ttk, Tk
 
 __author__ = 'fenzl'
 
+
 def configure_theme(root: Tk) -> None:
     """Pick a simple built-in theme; prefer Aquativo/Adapta if present, else clam."""
     # ttk gives us themed basics; tk widgets remain where ttk lacks equivalents.

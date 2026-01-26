@@ -7,6 +7,7 @@ from views.main import MainView
 
 __author__ = 'fenzl, ahsan'
 
+
 class SignInController:
     def __init__(self, main_model: MainModel, main_view: MainView) -> None:
         self.main_model = main_model
