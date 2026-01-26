@@ -43,12 +43,15 @@ class DeckServiceTests(DBTestCase):
         self.service.update_score(user_id=self.user_id, card_id=mid.id, delta=3)
         self.service.update_score(user_id=self.user_id, card_id=high.id, delta=6)
 
+        # Since next card is not deterministic, sample multiple times to verify weighting.
+        # Remember the appearance counts to verify that the expected distribution is observed.
         counts = {low.id: 0, mid.id: 0, high.id: 0}
         for _ in range(200):
             card = self.service.next_card_for_study(user_id=self.user_id, deck_id=deck.id)
             if card:
                 counts[card.id] += 1
 
+        # We expect low-score cards to appear more frequently than higher-score cards.
         self.assertGreater(counts[low.id], counts[mid.id])
         self.assertGreater(counts[mid.id], counts[high.id])
 
