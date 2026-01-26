@@ -17,20 +17,21 @@ class SignInController:
 
     def _bind(self) -> None:
         """Binds controller functions with respective buttons in the view"""
-        self.frame.signin_btn.config(command=self.signin)
-        self.frame.signup_btn.config(command=self.signup)
+        self.frame.set_signin_command(self.signin)
+        self.frame.set_signup_command(self.signup)
 
     def signup(self) -> None:
         self.main_view.switch(name="signup")
 
     def signin(self) -> None:
-        username = self.frame.username_input.get()
-        password = self.frame.password_input.get()
+        username = self.frame.get_username()
+        password = self.frame.get_password()
         try:
             self.main_model.auth.authenticate(username=username, password=password)
         except ValueError as exception:
             messagebox.showerror("Sign In Failed", str(exception))
             return
 
-        self.frame.password_input.delete(0, last=len(password))
+        self.frame.clear_inputs()
+        self.frame.focus_username()
         messagebox.showinfo("Success", f"Signed in as {username}.")

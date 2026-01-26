@@ -50,3 +50,30 @@ class DeckListView(Frame):
 
     def clear_inputs(self) -> None:
         pass
+
+    def set_create_command(self, command) -> None:
+        self.create_btn.config(command=command)
+
+    def set_edit_command(self, command) -> None:
+        self.edit_btn.config(command=command)
+
+    def set_open_command(self, command) -> None:
+        self.open_btn.config(command=command)
+
+    def set_delete_command(self, command) -> None:
+        self.delete_btn.config(command=command)
+
+    def set_back_command(self, command) -> None:
+        self.back_btn.config(command=command)
+
+    def clear_decks(self) -> None:
+        self.deck_list.delete(0, "end")
+
+    def insert_deck(self, display_text: str) -> None:
+        self.deck_list.insert("end", display_text)
+
+    def get_selected_index(self) -> int | None:
+        selection = self.deck_list.curselection()
+        if not selection:
+            return None
+        return selection[0]

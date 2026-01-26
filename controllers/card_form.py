@@ -20,8 +20,8 @@ class CardFormController:
         self._bind()
 
     def _bind(self) -> None:
-        self.frame.save_btn.config(command=self.save)
-        self.frame.cancel_btn.config(command=self.cancel)
+        self.frame.set_save_command(self.save)
+        self.frame.set_cancel_command(self.cancel)
 
     def start_create(self, deck_id: int, deck_name: str) -> None:
         """Open the form in create mode."""
@@ -41,14 +41,14 @@ class CardFormController:
         self.frame.set_title(title=f"Edit Card in '{deck_name}'")
         self.frame.set_message(message="")
         self.frame.clear_inputs()
-        self.frame.question_input.insert("1.0", card.question)
-        self.frame.answer_input.insert("1.0", card.answer)
+        self.frame.set_question(card.question)
+        self.frame.set_answer(card.answer)
         self.main_view.switch(name="card_form")
 
     def save(self) -> None:
         """Persist changes and return to deck detail."""
-        question = self.frame.question_input.get("1.0", "end").strip()
-        answer = self.frame.answer_input.get("1.0", "end").strip()
+        question = self.frame.get_question().strip()
+        answer = self.frame.get_answer().strip()
         if self.current_deck_id is None:
             self.frame.set_message(message="No deck selected.")
             return

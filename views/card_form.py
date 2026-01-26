@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tkinter import Frame, Label, Text, Button, StringVar
+from tkinter import Button, Frame, Label, StringVar, Text
 
 
 __author__ = 'fenzl'
@@ -47,3 +47,26 @@ class CardFormView(Frame):
     def clear_inputs(self) -> None:
         self.question_input.delete("1.0", "end")
         self.answer_input.delete("1.0", "end")
+
+    def get_question(self) -> str:
+        return self.question_input.get("1.0", "end")
+
+    def set_question(self, value: str) -> None:
+        self.question_input.delete("1.0", "end")
+        self.question_input.insert("1.0", value)
+
+    def get_answer(self) -> str:
+        return self.answer_input.get("1.0", "end")
+
+    def set_answer(self, value: str) -> None:
+        self.answer_input.delete("1.0", "end")
+        self.answer_input.insert("1.0", value)
+
+    def set_save_command(self, command) -> None:
+        self.save_btn.config(command=command)
+
+    def set_cancel_command(self, command) -> None:
+        self.cancel_btn.config(command=command)
+
+    def focus_question(self) -> None:
+        self.question_input.focus_set()

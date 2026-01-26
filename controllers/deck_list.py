@@ -33,16 +33,16 @@ class DeckListController:
 
     def _bind(self) -> None:
         """Bind list view actions."""
-        self.frame.create_btn.config(command=self.new_deck)
-        self.frame.edit_btn.config(command=self.edit_deck)
-        self.frame.open_btn.config(command=self.open_deck)
-        self.frame.delete_btn.config(command=self.delete_deck)
-        self.frame.back_btn.config(command=lambda: self.main_view.switch(name="home"))
+        self.frame.set_create_command(self.new_deck)
+        self.frame.set_edit_command(self.edit_deck)
+        self.frame.set_open_command(self.open_deck)
+        self.frame.set_delete_command(self.delete_deck)
+        self.frame.set_back_command(lambda: self.main_view.switch(name="home"))
 
     def refresh(self) -> None:
         """Reload decks for the current user."""
         self._decks = []
-        self.frame.deck_list.delete(0, "end")
+        self.frame.clear_decks()
         try:
             user = require_user(auth=self.main_model.auth)
             decks = self.main_model.decks.list_decks(user_id=user.id)
@@ -50,7 +50,7 @@ class DeckListController:
             for deck in decks:
                 name = truncate_and_pad(text=deck.name, width=22)
                 desc = truncate_and_pad(text=deck.description, width=28)
-                self.frame.deck_list.insert("end", f"{name} | {desc}")
+                self.frame.insert_deck(f"{name} | {desc}")
             self.frame.set_message(message="")
         except ValueError as exception:
             # Missing auth or fetch failure; surface message to the list view.
@@ -58,10 +58,9 @@ class DeckListController:
 
     def _selected_deck(self) -> Optional[DeckData]:
         """Return the currently highlighted deck, or None."""
-        selection = self.frame.deck_list.curselection()
-        if not selection:
+        index = self.frame.get_selected_index()
+        if index is None:
             return None
-        index = selection[0]
         if index >= len(self._decks):
             return None
         return self._decks[index]

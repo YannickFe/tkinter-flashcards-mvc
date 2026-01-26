@@ -241,10 +241,13 @@ class DeckService:
                 self._log(message=f"No cards available for study in deck {deck_id}")
                 return None
 
+            # Invert the scores to create weights for semi-random selection, because high score means well memorized,
+            # so they should be less likely to be drawn.
             max_score = max(card.score for card in cards)
-            # Weighted draw: lower scores get higher weight so weak cards surface more often.
+            # Weighted draw: lower scores get higher weight, so weak cards surface more often.
             # Each weight is (max_score - current_score + 1) to avoid zeros and keep odds positive.
             weights = [max_score - card.score + 1 for card in cards]
+
             # choices returns a list of k picks (with replacement); k=1 here, so take the first pick.
             # The chance of each pick is proportional to its weight.
             choice = self._rng.choices(cards, weights=weights, k=1)[0]

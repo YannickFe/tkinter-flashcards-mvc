@@ -19,8 +19,8 @@ class DeckFormController:
         self._bind()
 
     def _bind(self) -> None:
-        self.frame.save_btn.config(command=self.save)
-        self.frame.cancel_btn.config(command=self.cancel)
+        self.frame.set_save_command(self.save)
+        self.frame.set_cancel_command(self.cancel)
 
     def start_create(self) -> None:
         """Open the form in create mode."""
@@ -36,14 +36,14 @@ class DeckFormController:
         self.frame.set_title(title="Edit Deck")
         self.frame.set_message(message="")
         self.frame.clear_inputs()
-        self.frame.name_input.insert(0, deck.name)
-        self.frame.desc_input.insert(0, deck.description)
+        self.frame.set_name(deck.name)
+        self.frame.set_description(deck.description)
         self.main_view.switch(name="deck_form")
 
     def save(self) -> None:
         """Persist changes and return to the deck list."""
-        name = self.frame.name_input.get().strip()
-        desc = self.frame.desc_input.get().strip()
+        name = self.frame.get_name().strip()
+        desc = self.frame.get_description().strip()
         try:
             user = require_user(auth=self.main_model.auth)
             if self.current_deck_id is None:

@@ -51,3 +51,30 @@ class DeckDetailView(Frame):
 
     def set_message(self, message: str) -> None:
         self.message_var.set(message)
+
+    def set_add_card_command(self, command) -> None:
+        self.add_card_btn.config(command=command)
+
+    def set_update_card_command(self, command) -> None:
+        self.update_card_btn.config(command=command)
+
+    def set_delete_card_command(self, command) -> None:
+        self.delete_card_btn.config(command=command)
+
+    def set_study_command(self, command) -> None:
+        self.study_btn.config(command=command)
+
+    def set_back_command(self, command) -> None:
+        self.back_btn.config(command=command)
+
+    def clear_cards(self) -> None:
+        self.cards_list.delete(0, "end")
+
+    def insert_card(self, display_text: str) -> None:
+        self.cards_list.insert("end", display_text)
+
+    def get_selected_index(self) -> int | None:
+        selection = self.cards_list.curselection()
+        if not selection:
+            return None
+        return selection[0]

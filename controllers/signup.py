@@ -17,18 +17,18 @@ class SignUpController:
 
     def _bind(self) -> None:
         """Binds controller functions with respective buttons in the view"""
-        self.frame.signup_btn.config(command=self.signup)
-        self.frame.signin_btn.config(command=self.signin)
+        self.frame.set_signup_command(self.signup)
+        self.frame.set_signin_command(self.signin)
 
     def signin(self) -> None:
         self.main_view.switch(name="signin")
 
     def signup(self) -> None:
         data = {
-            "fullname": self.frame.fullname_input.get(),
-            "username": self.frame.username_input.get(),
-            "password": self.frame.password_input.get(),
-            "has_agreed": self.frame.has_agreed.get(),
+            "fullname": self.frame.get_fullname(),
+            "username": self.frame.get_username(),
+            "password": self.frame.get_password(),
+            "has_agreed": self.frame.get_has_agreed(),
         }
         if not data["has_agreed"]:
             messagebox.showerror("Sign Up Failed", "You must accept the Terms & Conditions.")
@@ -49,12 +49,5 @@ class SignUpController:
 
 
     def clear_form(self) -> None:
-        fullname = self.frame.fullname_input.get()
-        username = self.frame.username_input.get()
-        password = self.frame.password_input.get()
-        self.frame.fullname_input.delete(0, last=len(fullname))
-        self.frame.fullname_input.focus()
-        self.frame.username_input.delete(0, last=len(username))
-        self.frame.password_input.delete(0, last=len(password))
-
-        self.frame.has_agreed.set(False)
+        self.frame.clear_inputs()
+        self.frame.focus_fullname()

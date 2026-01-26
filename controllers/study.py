@@ -27,10 +27,10 @@ class StudyController:
         self.deck_detail_controller = controller
 
     def _bind(self) -> None:
-        self.frame.show_answer_btn.config(command=self.show_answer)
-        self.frame.memorized_btn.config(command=lambda: self.rate_card(delta=1))
-        self.frame.not_memorized_btn.config(command=lambda: self.rate_card(delta=-1))
-        self.frame.back_btn.config(command=self.back_to_deck)
+        self.frame.set_show_answer_command(self.show_answer)
+        self.frame.set_memorized_command(lambda: self.rate_card(delta=1))
+        self.frame.set_not_memorized_command(lambda: self.rate_card(delta=-1))
+        self.frame.set_back_command(self.back_to_deck)
 
     def start(self, deck_id: int, deck_name: str) -> None:
         self.current_deck_id = deck_id
@@ -54,15 +54,15 @@ class StudyController:
                 self.frame.clear_card()
                 return
             self.frame.set_message(message="")
-            self.frame.question_var.set(f"Q: {card.question}")
-            self.frame.answer_var.set("")
+            self.frame.set_question(f"Q: {card.question}")
+            self.frame.set_answer("")
         except ValueError as exception:
             self.frame.set_message(message=str(exception))
 
     def show_answer(self) -> None:
         if not self.current_card:
             return
-        self.frame.answer_var.set(f"A: {self.current_card.answer}")
+        self.frame.set_answer(f"A: {self.current_card.answer}")
 
     def rate_card(self, delta: int) -> None:
         if not self.current_card:

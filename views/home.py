@@ -22,3 +22,12 @@ class HomeView(Frame):
 
         self.signout_btn = Button(self, text="Sign Out")
         self.signout_btn.grid(row=2, column=0, padx=10, pady=10)
+
+    def set_greeting(self, text: str) -> None:
+        self.greeting.config(text=text)
+
+    def set_signout_command(self, command) -> None:
+        self.signout_btn.config(command=command)
+
+    def set_deck_command(self, command) -> None:
+        self.deck_btn.config(command=command)

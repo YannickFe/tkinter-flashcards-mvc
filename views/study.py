@@ -48,3 +48,21 @@ class StudyView(Frame):
     def clear_card(self) -> None:
         self.question_var.set("")
         self.answer_var.set("")
+
+    def set_question(self, question: str) -> None:
+        self.question_var.set(question)
+
+    def set_answer(self, answer: str) -> None:
+        self.answer_var.set(answer)
+
+    def set_show_answer_command(self, command) -> None:
+        self.show_answer_btn.config(command=command)
+
+    def set_memorized_command(self, command) -> None:
+        self.memorized_btn.config(command=command)
+
+    def set_not_memorized_command(self, command) -> None:
+        self.not_memorized_btn.config(command=command)
+
+    def set_back_command(self, command) -> None:
+        self.back_btn.config(command=command)

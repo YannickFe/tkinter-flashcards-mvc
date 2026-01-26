@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tkinter import Frame, Label, Entry, Button, StringVar
+from tkinter import Button, Entry, Frame, Label, StringVar
 
 
 __author__ = 'fenzl'
@@ -18,14 +18,16 @@ class DeckFormView(Frame):
         self.title_label = Label(self, textvariable=self.title_var)
         self.title_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="w")
 
+        self.name_var = StringVar()
         self.name_label = Label(self, text="Name")
         self.name_label.grid(row=1, column=0, padx=10, sticky="w")
-        self.name_input = Entry(self)
+        self.name_input = Entry(self, textvariable=self.name_var)
         self.name_input.grid(row=1, column=1, padx=(0, 20), pady=4, sticky="ew")
 
+        self.desc_var = StringVar()
         self.desc_label = Label(self, text="Description")
         self.desc_label.grid(row=2, column=0, padx=10, sticky="w")
-        self.desc_input = Entry(self)
+        self.desc_input = Entry(self, textvariable=self.desc_var)
         self.desc_input.grid(row=2, column=1, padx=(0, 20), pady=4, sticky="ew")
 
         self.save_btn = Button(self, text="Save")
@@ -45,5 +47,26 @@ class DeckFormView(Frame):
         self.message_var.set(message)
 
     def clear_inputs(self) -> None:
-        self.name_input.delete(0, "end")
-        self.desc_input.delete(0, "end")
+        self.name_var.set("")
+        self.desc_var.set("")
+
+    def get_name(self) -> str:
+        return self.name_var.get()
+
+    def set_name(self, value: str) -> None:
+        self.name_var.set(value)
+
+    def get_description(self) -> str:
+        return self.desc_var.get()
+
+    def set_description(self, value: str) -> None:
+        self.desc_var.set(value)
+
+    def set_save_command(self, command) -> None:
+        self.save_btn.config(command=command)
+
+    def set_cancel_command(self, command) -> None:
+        self.cancel_btn.config(command=command)
+
+    def focus_name(self) -> None:
+        self.name_input.focus_set()

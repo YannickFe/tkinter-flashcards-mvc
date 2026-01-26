@@ -16,8 +16,8 @@ class HomeController:
 
     def _bind(self) -> None:
         """Binds controller functions with respective buttons in the view"""
-        self.frame.signout_btn.config(command=self.logout)
-        self.frame.deck_btn.config(command=self.switch_to_decks)
+        self.frame.set_signout_command(self.logout)
+        self.frame.set_deck_command(self.switch_to_decks)
 
     def logout(self) -> None:
         self.main_model.auth.logout()
@@ -30,6 +30,6 @@ class HomeController:
         current_user = self.main_model.auth.current_user
         if current_user:
             name = current_user.full_name or current_user.username
-            self.frame.greeting.config(text=f"Welcome, {name}!")
+            self.frame.set_greeting(text=f"Welcome, {name}!")
         else:
-            self.frame.greeting.config(text="")
+            self.frame.set_greeting(text="")

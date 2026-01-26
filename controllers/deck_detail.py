@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from tkinter import END, messagebox
+from tkinter import messagebox
 from typing import List, Optional, TYPE_CHECKING
 
 from controllers.utils import require_user, truncate_and_pad
@@ -35,11 +35,11 @@ class DeckDetailController:
 
     def _bind(self) -> None:
         """Bind deck detail actions."""
-        self.frame.add_card_btn.config(command=self.add_card)
-        self.frame.update_card_btn.config(command=self.update_card)
-        self.frame.delete_card_btn.config(command=self.delete_card)
-        self.frame.study_btn.config(command=self.start_study)
-        self.frame.back_btn.config(command=self.back_to_decks)
+        self.frame.set_add_card_command(self.add_card)
+        self.frame.set_update_card_command(self.update_card)
+        self.frame.set_delete_card_command(self.delete_card)
+        self.frame.set_study_command(self.start_study)
+        self.frame.set_back_command(self.back_to_decks)
 
     def load_deck(self, deck_id: int) -> None:
         """Load deck metadata and cards."""
@@ -63,11 +63,11 @@ class DeckDetailController:
             user = require_user(auth=self.main_model.auth)
             cards = self.main_model.decks.list_cards(user_id=user.id, deck_id=self.current_deck_id)
             self.current_cards = cards
-            self.frame.cards_list.delete(0, END)
+            self.frame.clear_cards()
             for card in cards:
                 question_preview = truncate_and_pad(text=card.question, width=30)
                 display = f"Q: {question_preview} | Score: {card.score}"
-                self.frame.cards_list.insert(END, display)
+                self.frame.insert_card(display)
             self.frame.set_message(message="")
         except ValueError as exception:
             # Likely missing auth or deck/cards no longer exist.
@@ -75,10 +75,9 @@ class DeckDetailController:
 
     def _selected_card(self) -> Optional[CardData]:
         """Return the selected card (or None)."""
-        selection = self.frame.cards_list.curselection()
-        if not selection:
+        index = self.frame.get_selected_index()
+        if index is None:
             return None
-        index = selection[0]
         if index >= len(self.current_cards):
             return None
         return self.current_cards[index]
