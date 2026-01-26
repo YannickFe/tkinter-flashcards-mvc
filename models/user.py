@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from models.observable import ObservableModel
 from models.storage import Base
-from models.storage import SessionLocal, init_db
+from models.storage import SessionLocal
 
 
 __author__ = 'fenzl'
@@ -38,7 +38,6 @@ class UserData:
 class UserService(ObservableModel):
     def __init__(self):
         super().__init__()
-        init_db()
         self.is_logged_in = False
         self.current_user: UserData | None = None
 

@@ -19,7 +19,5 @@ Base = declarative_base()
 
 
 def init_db() -> None:
-    # Imported late to avoid circular imports
-
     # Base.metadata (from declarative_base) collects all mapped tables above; create_all builds them in SQLite if missing.
     Base.metadata.create_all(bind=engine)
