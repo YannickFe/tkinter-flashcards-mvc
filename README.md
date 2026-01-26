@@ -33,7 +33,7 @@ ineffective.
 - MVC structure with dedicated views/forms for signup, sign-in, home, deck list, deck detail (with card table), deck
   form, card form, and study.
 - Decks and cards are persisted per user. Cards store a score; studying presents lower-score cards more often. Marking “Memorized” increases the score, “Not Memorized” decreases it (floored at zero).
-- A sample deck seeds on first login to demonstrate flows.
+- A sample deck seeds on login when no decks exist for demonstration.
 
 ## Usage
 
