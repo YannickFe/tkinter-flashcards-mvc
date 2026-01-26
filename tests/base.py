@@ -6,7 +6,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
 
 from models.storage import Base
-from models.user import UserRecord
+from models.user import UserRecord, UserData
 
 
 __author__ = 'fenzl'
@@ -30,8 +30,8 @@ class DBTestCase(unittest.TestCase):
 
     def create_user(
             self, username: str = "test", full_name: str = "Test User", password_hash: str = "hash"
-    ) -> int:
-        """Helper to seed a user for tests; returns the user id."""
+    ) -> UserData:
+        """Helper to seed a user for tests; returns the user data object."""
         with self.session_factory() as session:
             user = UserRecord(
                 username=username,
@@ -41,4 +41,4 @@ class DBTestCase(unittest.TestCase):
             session.add(user)
             session.commit()
             session.refresh(user)
-            return user.id
+            return UserData(id=user.id, username=user.username, full_name=user.full_name)
