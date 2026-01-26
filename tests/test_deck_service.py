@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 import unittest
 
 from models.deck import DeckService
 from tests.base import DBTestCase
 
+
+__author__ = 'fenzl'
 
 class DeckServiceTests(DBTestCase):
     """Exercise deck scoring/selection logic against an in-memory DB."""

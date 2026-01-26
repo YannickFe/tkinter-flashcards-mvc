@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 from tkinter import Tk
 
 from views.theme import configure_theme
 
+
+__author__ = 'fenzl, ahsan'
 
 class Root(Tk):
     """

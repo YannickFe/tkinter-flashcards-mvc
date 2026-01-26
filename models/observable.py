@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
 from typing import Callable, TypeVar, Any
+
+__author__ = 'fenzl'
 
 Self = TypeVar("Self", bound="ObservableModel")
 

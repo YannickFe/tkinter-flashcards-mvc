@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 from tkinter import Button, Frame, Label, Listbox, Scrollbar, StringVar
 
+
+__author__ = 'fenzl'
 
 class DeckListView(Frame):
     """List decks with grouped actions for CRUD and navigation."""

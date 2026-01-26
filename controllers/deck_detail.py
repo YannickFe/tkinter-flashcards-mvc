@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tkinter import END, messagebox
 from typing import List, Optional, TYPE_CHECKING
 
@@ -5,6 +6,8 @@ from controllers.utils import require_user, truncate_and_pad
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
+
+__author__ = 'fenzl'
 
 if TYPE_CHECKING:
     from controllers.card_form import CardFormController

@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 from tkinter import messagebox
 
 from models.main import MainModel
 from views.main import MainView
 
+
+__author__ = 'fenzl, ahsan'
 
 class SignUpController:
     def __init__(self, main_model: MainModel, main_view: MainView):

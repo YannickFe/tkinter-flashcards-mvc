@@ -1,7 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from controllers.main import MainController
 from models.main import MainModel
 from views.main import MainView
 
+
+__author__ = 'fenzl, ahsan'
 
 def main():
     main_model = MainModel()

@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
 from typing import Optional, TYPE_CHECKING
 
 from controllers.utils import require_user
 from models.deck import CardData
 from models.main import MainModel
 from views.main import MainView
+
+__author__ = 'fenzl'
 
 if TYPE_CHECKING:
     from controllers.deck_detail import DeckDetailController

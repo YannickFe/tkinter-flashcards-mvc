@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 
 from sqlalchemy import create_engine
@@ -7,6 +8,8 @@ from sqlalchemy.orm import Session, sessionmaker
 from models.storage import Base
 from models.user import UserRecord
 
+
+__author__ = 'fenzl'
 
 class DBTestCase(unittest.TestCase):
     """Base test case that provisions an in-memory SQLite DB and session factory."""

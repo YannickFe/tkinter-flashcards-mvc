@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from dataclasses import dataclass
 from typing import Optional
 
@@ -10,6 +11,8 @@ from models.observable import ObservableModel
 from models.storage import Base
 from models.storage import SessionLocal, init_db
 
+
+__author__ = 'fenzl'
 
 class UserRecord(Base):
     """ORM table for users (persisted in SQLite)."""

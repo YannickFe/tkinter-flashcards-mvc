@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 import unittest
 
 from models.deck import DeckService, CardData
 from tests.base import DBTestCase
 
+
+__author__ = 'fenzl'
 
 class DeckCrudTests(DBTestCase):
     """Validate deck and card CRUD behavior and input validation."""

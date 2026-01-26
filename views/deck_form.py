@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 from tkinter import Frame, Label, Entry, Button, StringVar
 
+
+__author__ = 'fenzl'
 
 class DeckFormView(Frame):
     """Simple form for deck name/description with save/cancel and inline message."""

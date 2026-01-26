@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 from tkinter import Frame, Label, Button
 
+
+__author__ = 'fenzl, ahsan'
 
 class HomeView(Frame):
     def __init__(self, *args, **kwargs):

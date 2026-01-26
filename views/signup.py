@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
 from tkinter import Frame, Label, Entry, Checkbutton, Button, BooleanVar
 
+
+__author__ = 'fenzl, ahsan'
 
 class SignUpView(Frame):
     def __init__(self, *args, **kwargs):

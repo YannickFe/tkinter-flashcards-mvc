@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
 from controllers.utils import require_user
 from models.deck import DeckData
 from models.main import MainModel
 from views.main import MainView
 
+
+__author__ = 'fenzl'
 
 class DeckFormController:
     def __init__(self, main_model: MainModel, main_view: MainView, deck_list_controller):

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -9,6 +10,8 @@ from sqlalchemy.orm import Session, relationship
 
 from models.storage import Base, SessionLocal
 
+
+__author__ = 'fenzl'
 
 class DeckRecord(Base):
     """ORM table for decks (persisted in SQLite)."""

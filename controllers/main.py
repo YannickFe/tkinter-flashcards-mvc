@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from controllers.card_form import CardFormController
 from controllers.deck_detail import DeckDetailController
 from controllers.deck_form import DeckFormController
@@ -10,6 +11,8 @@ from models.main import MainModel
 from models.user import UserService
 from views.main import MainView
 
+
+__author__ = 'fenzl, ahsan'
 
 class MainController:
     def __init__(self, main_model: MainModel, main_view: MainView) -> None:

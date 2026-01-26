@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from tkinter import Frame
 from typing import TypedDict
 
@@ -11,6 +12,8 @@ from views.signin import SignInView
 from views.signup import SignUpView
 from views.study import StudyView
 
+
+__author__ = 'fenzl, ahsan'
 
 class Frames(TypedDict):
     # TypedDict keeps frame names & types explicit for type checkers; at runtime it's a dict.
