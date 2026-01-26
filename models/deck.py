@@ -258,15 +258,13 @@ class DeckService:
             return data
 
     def seed_sample(self, user_id: int) -> None:
-        """Create a sample deck with cards for quick demos."""
+        """Create a sample deck with cards for quick demos when user has no decks yet."""
         with self._session() as session:
-            existing = (
-                session.query(DeckRecord)
-                .filter(DeckRecord.user_id == user_id, DeckRecord.name == "Sample Deck")
-                .first()
+            has_decks = (
+                    session.query(DeckRecord.id).filter(DeckRecord.user_id == user_id).first() is not None
             )
-            if existing:
-                self._log(message="Sample deck already exists; skipping seed")
+            if has_decks:
+                self._log(message="User already has decks; skipping seed")
                 return
 
             deck = DeckRecord(name="Sample Deck", description="Getting started", user_id=user_id)
